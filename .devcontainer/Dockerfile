@@ -2,6 +2,7 @@ FROM rust:1.47-buster
 
 RUN apt-get update -y && \
     apt-get install -y \
+    nano \
     lldb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
