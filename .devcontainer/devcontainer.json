@@ -1,20 +1,28 @@
 {
-    "name": "Rust-deps",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
-	"settings": {
-		"terminal.integrated.shell.linux": "/bin/bash",
-		"lldb.executable": "/usr/bin/lldb",
-		"files.watcherExclude": {
-			"**/target/**": true
-		}
-	},
-	"extensions": [
-		"rust-lang.rust",
-		"bungcip.better-toml",
-		"vadimcn.vscode-lldb",
-		"mutantdino.resourcemonitor"
-	],
+  "name": "Rust-deps",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "lldb.executable": "/usr/bin/lldb",
+    "files.watcherExclude": {
+      "**/target/**": true
+    }
+  },
+  "extensions": [
+    "rust-lang.rust",
+    "bungcip.better-toml",
+    "vadimcn.vscode-lldb",
+    "mutantdino.resourcemonitor",
+    "durzn.brackethighlighter",
+    "github.vscode-pull-request-github",
+    "eamodio.gitlens",
+    "davidanson.vscode-markdownlint",
+    "christian-kohler.path-intellisense",
+    "esbenp.prettier-vscode",
+    "shardulm94.trailing-spaces",
+    "mosapride.zenkaku"
+  ]
 }
