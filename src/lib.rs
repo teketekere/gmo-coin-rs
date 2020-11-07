@@ -15,8 +15,8 @@
 /// let echo_msg = echo(msg);
 ///```
 ///
-pub fn echo(msg: &str) -> String {
-    return String::from(msg);
+pub fn echo(msg: &str) {
+    String::from(msg);
 }
 
 #[cfg(test)]
