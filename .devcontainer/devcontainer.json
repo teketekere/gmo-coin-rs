@@ -10,7 +10,9 @@
     "files.watcherExclude": {
       "**/target/**": true
     },
-    "rust.rustfmt_path": "rustfmt"
+    "rust.rustfmt_path": "rustfmt",
+    "rust.build_on_save": true,
+    "rust.clippy_preference": "on"
   },
   "extensions": [
     "rust-lang.rust",
