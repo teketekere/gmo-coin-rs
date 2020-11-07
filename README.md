@@ -1,3 +1,6 @@
 # rust-docker-sample
 
-Rust 開発環境の Dockerfile サンプル。
+Sample project for rust with...
+
+- Docker(+ VSCode) develop environment
+- GitHub Actions CI/CD
