@@ -9,7 +9,8 @@
     "lldb.executable": "/usr/bin/lldb",
     "files.watcherExclude": {
       "**/target/**": true
-    }
+    },
+    "rust.rustfmt_path": "rustfmt"
   },
   "extensions": [
     "rust-lang.rust",
@@ -24,6 +25,8 @@
     "esbenp.prettier-vscode",
     "shardulm94.trailing-spaces",
     "mosapride.zenkaku",
-    "vtrois.gitmoji-vscode"
+    "vtrois.gitmoji-vscode",
+    "matklad.rust-analyzer",
+    "kevinkyang.auto-comment-blocks"
   ]
 }
