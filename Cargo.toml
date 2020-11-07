@@ -7,5 +7,7 @@ include = [
     "**/*.rs",
     "Cargo.toml",
 ]
+repository = "https://github.com/teketekere/rust-docker-sample"
+readme = "README.md"
 
 [dependencies]
