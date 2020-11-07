@@ -3,7 +3,9 @@ FROM rust:1.47-buster
 RUN apt-get update -y && \
     apt-get install -y \
     nano \
-    lldb && \
+    lldb \
+    pkg-config \
+    libssl-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
