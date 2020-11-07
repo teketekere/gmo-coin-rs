@@ -1,0 +1,15 @@
+[package]
+name = "rust-docker-sample"
+version = "0.1.0"
+authors = ["teketekere <hujikoseina@gmail.com>"]
+license-file = "LICENSE"
+description = "A sample project"
+repository = "https://github.com/teketekere/rust-docker-sample"
+readme = "README.md"
+include = [
+    "**/*.rs",
+    "Cargo.toml",
+    "LICENSE",
+]
+
+[dependencies]
