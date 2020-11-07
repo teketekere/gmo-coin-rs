@@ -2,12 +2,14 @@
 name = "rust-docker-sample"
 version = "0.1.0"
 authors = ["teketekere <ouie-ahaaaan@gmail.com>"]
-edition = "2018"
+license-file = "LICENSE"
+description = "A sample project"
+repository = "https://github.com/teketekere/rust-docker-sample"
+readme = "README.md"
 include = [
     "**/*.rs",
     "Cargo.toml",
+    "LICENSE",
 ]
-repository = "https://github.com/teketekere/rust-docker-sample"
-readme = "README.md"
 
 [dependencies]
