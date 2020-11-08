@@ -1,3 +1,5 @@
+//! APIのレスポンスを定義する。
+
 /// HTTPクライアントから返ってくるそのままのレスポンスを持つ構造体。
 pub struct RawResponse {
     pub http_status_code: u16,

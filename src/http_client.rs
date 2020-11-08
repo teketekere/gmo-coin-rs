@@ -1,3 +1,5 @@
+//! HTTPクライアントを定義する。
+
 use crate::error::*;
 use crate::response::*;
 use async_trait::async_trait;

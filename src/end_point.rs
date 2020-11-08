@@ -1,3 +1,5 @@
+//! APIのエンドポイントを定義する。
+
 /// Public APIのエンドポイント。
 pub const PUBLIC_ENDPOINT: &str = "https://api.coin.z.com/public";
 
