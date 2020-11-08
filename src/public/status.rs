@@ -37,6 +37,7 @@ pub trait Status {
     fn is_open(&self) -> bool;
     fn is_pre_open(&self) -> bool;
     fn is_maintenance(&self) -> bool;
+    fn status(&self) -> &String;
 }
 
 impl Status for RestResponse<Body> {
@@ -55,6 +56,11 @@ impl Status for RestResponse<Body> {
     /// 定時メンテナンスは日本時間で毎週水曜15:00 - 16:00。
     fn is_maintenance(&self) -> bool {
         self.body.data.status == EXCHANGE_STATUS_MAINTENANCE
+    }
+
+    /// 取引所のステータスを返す。
+    fn status(&self) -> &String {
+        &self.body.data.status
     }
 }
 
@@ -96,7 +102,7 @@ mod tests {
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(resp.body.responsetime, "2019-03-19T02:15:06.001Z");
-        assert_eq!(resp.body.data.status, "OPEN");
+        assert_eq!(resp.status(), "OPEN");
         assert_eq!(resp.is_open(), true);
     }
 
