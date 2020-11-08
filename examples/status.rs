@@ -19,11 +19,10 @@ async fn main() -> Result<(), Error> {
     let end = start.elapsed();
 
     println!(
-        "かかった時間: {}.{:05} [seconds]",
-        end.as_secs(),
-        end.subsec_micros() / 1000000
+        "かかった時間: {:05} [seconds]",
+        end.as_micros() as f64 / 1e6
     );
-    println!("取引所ステータス: {}\n", response.status());
+    println!("取引所ステータス: {}", response.status());
     println!(
         "HTTPステータスコード: {}\nステータスコード: {}\nAPIを呼び出した時間: {}",
         response.http_status_code, response.body.status, response.body.responsetime,
