@@ -78,7 +78,7 @@ pub async fn status(http_client: impl HttpClient) -> Result<RestResponse<Body>, 
 
 #[cfg(test)]
 mod tests {
-    use crate::http_client::InmemClient;
+    use crate::http_client::tests::InmemClient;
     use crate::public::status::status;
     use crate::public::status::Status;
 

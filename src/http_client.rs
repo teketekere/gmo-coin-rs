@@ -29,23 +29,28 @@ impl HttpClient for Reqwest {
     }
 }
 
-/// 単体テスト用のHttpクライアント。
-pub struct InmemClient {
-    pub http_status_code: u16,
-    pub body_text: String,
-    pub return_error: bool,
-}
+#[cfg(test)]
+pub mod tests {
+    use super::*;
 
-#[async_trait]
-impl HttpClient for InmemClient {
-    async fn get(&self, _url: String) -> Result<RawResponse, Error> {
-        if (self.return_error) {
-            return Err(Error::UnknownError {});
+    /// 単体テスト用のHttpクライアント。
+    pub struct InmemClient {
+        pub http_status_code: u16,
+        pub body_text: String,
+        pub return_error: bool,
+    }
+
+    #[async_trait]
+    impl HttpClient for InmemClient {
+        async fn get(&self, _url: String) -> Result<RawResponse, Error> {
+            if (self.return_error) {
+                return Err(Error::UnknownError {});
+            }
+
+            Ok(RawResponse {
+                http_status_code: (self.http_status_code),
+                body_text: (self.body_text.clone()),
+            })
         }
-
-        Ok(RawResponse {
-            http_status_code: (self.http_status_code),
-            body_text: (self.body_text.clone()),
-        })
     }
 }
