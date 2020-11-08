@@ -26,21 +26,21 @@ pub struct Data {
 
 /// 取引所ステータスAPIから返ってくるレスポンスを格納する構造体。
 #[derive(Serialize, Deserialize)]
-pub struct Body {
+pub struct Status {
     pub status: i16,
     pub responsetime: String,
     pub data: Data,
 }
 
 /// 取引所ステータスのtrait。取引所が開いているかどうかなどの判定を行う関数を定義する。
-pub trait Status {
+pub trait StatusTrait {
     fn is_open(&self) -> bool;
     fn is_pre_open(&self) -> bool;
     fn is_maintenance(&self) -> bool;
     fn status(&self) -> &String;
 }
 
-impl Status for RestResponse<Body> {
+impl StatusTrait for RestResponse<Status> {
     /// 取引所が開いているか？
     fn is_open(&self) -> bool {
         self.body.data.status == EXCHANGE_STATUS_OPEN
@@ -65,12 +65,12 @@ impl Status for RestResponse<Body> {
 }
 
 /// 取引所ステータスAPIを呼び出す。
-pub async fn status(http_client: impl HttpClient) -> Result<RestResponse<Body>, Error> {
+pub async fn get_status(http_client: impl HttpClient) -> Result<RestResponse<Status>, Error> {
     let response = http_client
         .get(to_url(PUBLIC_ENDPOINT, STATUS_API_PATH))
         .await?;
-    let body: Body = serde_json::from_str(&response.body_text)?;
-    Ok(RestResponse::<Body> {
+    let body: Status = serde_json::from_str(&response.body_text)?;
+    Ok(RestResponse::<Status> {
         http_status_code: (response.http_status_code),
         body: (body),
     })
@@ -79,8 +79,7 @@ pub async fn status(http_client: impl HttpClient) -> Result<RestResponse<Body>, 
 #[cfg(test)]
 mod tests {
     use crate::http_client::tests::InmemClient;
-    use crate::public::status::status;
-    use crate::public::status::Status;
+    use crate::public::status::*;
 
     const STATUS_RESPONSE_SAMPLE: &str = r#"{
         "status": 0,
@@ -98,7 +97,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = status(http_client).await.unwrap();
+        let resp = get_status(http_client).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(resp.body.responsetime, "2019-03-19T02:15:06.001Z");
@@ -114,7 +113,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = status(http_client).await;
+        let resp = get_status(http_client).await;
         assert_eq!(resp.is_err(), true);
     }
 
@@ -126,7 +125,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: true,
         };
-        let resp = status(http_client).await;
+        let resp = get_status(http_client).await;
         assert_eq!(resp.is_err(), true);
     }
 }
