@@ -22,4 +22,4 @@ thiserror = "1.0.22"
 
 [[example]]
 name = "status"
-path = "examples/status.rs"
+path = "examples/public/status.rs"
