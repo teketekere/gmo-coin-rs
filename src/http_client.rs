@@ -17,10 +17,7 @@ pub struct Reqwest;
 #[async_trait]
 impl HttpClient for Reqwest {
     async fn get(&self, url: String) -> Result<RawResponse, Error> {
-        // ここでunwrapを使うとエラーが起きた時にPanicになるが、どうやってそれを回避すればいいのかがわからない。
-        // ParseErrorをcrate::Errorに変換したいけどどうやってやるんだ？
-        let url_as_reqwest_style = reqwest::Url::parse(&url).unwrap();
-
+        let url_as_reqwest_style = reqwest::Url::parse(&url)?;
         let response = reqwest::get(url_as_reqwest_style).await?;
         let status_code = response.status().as_u16();
         let body = response.text().await?;
