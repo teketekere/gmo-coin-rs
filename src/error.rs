@@ -9,8 +9,10 @@ use thiserror::Error;
 pub enum Error {
     #[error("reqwest error")]
     ReqwestError,
+
     #[error("serde_json Error")]
     SerdeJsonError(serde_json::error::Category),
+
     #[error("Unknown error")]
     UnknownError,
 }

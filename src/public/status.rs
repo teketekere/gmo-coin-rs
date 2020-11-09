@@ -65,7 +65,9 @@ impl StatusTrait for RestResponse<Status> {
 }
 
 /// 取引所ステータスAPIを呼び出す。
-pub async fn get_status(http_client: impl HttpClient) -> Result<RestResponse<Status>, Error> {
+pub async fn get_status<'a>(
+    http_client: &'a impl HttpClient,
+) -> Result<RestResponse<Status>, Error> {
     let response = http_client
         .get(to_url(PUBLIC_ENDPOINT, STATUS_API_PATH))
         .await?;
@@ -97,7 +99,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_status(http_client).await.unwrap();
+        let resp = get_status(&http_client).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(resp.body.responsetime, "2019-03-19T02:15:06.001Z");
@@ -113,7 +115,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_status(http_client).await;
+        let resp = get_status(&http_client).await;
         assert_eq!(resp.is_err(), true);
     }
 
@@ -125,7 +127,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: true,
         };
-        let resp = get_status(http_client).await;
+        let resp = get_status(&http_client).await;
         assert_eq!(resp.is_err(), true);
     }
 }
