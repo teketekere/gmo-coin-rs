@@ -1,17 +1,15 @@
-//! ライブラリ内でエラーが発生したときにResultのNGの方で返す値。
-//!
-//! 正直エラーハンドリング周りが全然わかっていない。
-//! サードパーティライブラリ(reqwestとか)でエラーがでたときどうすればいいんだ？
+//! ライブラリ内で異常が発生したときに投げるエラーを定義する。
 
 use thiserror::Error;
 
+/// 異常が発生したときに投げるエラー。
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("reqwest error")]
-    ReqwestError,
+    ReqwestError(reqwest::Error),
 
     #[error("serde_json error")]
-    SerdeJsonError(serde_json::error::Category),
+    SerdeJsonError(serde_json::Error),
 
     #[error("url parse error")]
     UrlParseError(url::ParseError),
@@ -21,14 +19,14 @@ pub enum Error {
 }
 
 impl From<reqwest::Error> for Error {
-    fn from(_e: reqwest::Error) -> Self {
-        Error::ReqwestError
+    fn from(e: reqwest::Error) -> Self {
+        Error::ReqwestError(e)
     }
 }
 
 impl From<serde_json::Error> for Error {
     fn from(e: serde_json::Error) -> Self {
-        Error::SerdeJsonError(e.classify())
+        Error::SerdeJsonError(e)
     }
 }
 
