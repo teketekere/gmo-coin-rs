@@ -1,4 +1,4 @@
-//!
+//! JSON文字列をパースするときに型変換行うための関数を定義する。
 
 use serde::{de, Deserialize, Deserializer};
 use serde_json::Value;
