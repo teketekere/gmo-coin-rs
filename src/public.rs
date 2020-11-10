@@ -5,8 +5,8 @@ pub mod ticker;
 
 use crate::error::Error;
 use crate::http_client::HttpClient;
-use crate::public::status::{Status, get_status};
-use crate::public::ticker::{Ticker, get_ticker};
+use crate::public::status::{get_status, Status};
+use crate::public::ticker::{get_ticker, Ticker};
 use crate::response::RestResponse;
 use async_trait::async_trait;
 
@@ -31,5 +31,4 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPITrait for P
         let response = get_ticker(&self.http_client, &symbol).await?;
         Ok(response)
     }
-
 }
