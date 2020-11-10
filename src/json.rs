@@ -7,7 +7,10 @@ use serde_json::Value;
 pub fn str_to_f64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<f64, D::Error> {
     Ok(match Value::deserialize(deserializer)? {
         Value::String(s) => s.parse().map_err(de::Error::custom)?,
-        Value::Number(num) => num.as_f64().ok_or(de::Error::custom("Invalid number"))? as f64,
+        Value::Number(num) => {
+            num.as_f64()
+                .ok_or_else(|| de::Error::custom("Invalid number"))? as f64
+        }
         _ => return Err(de::Error::custom("wrong type")),
     })
 }
@@ -16,7 +19,10 @@ pub fn str_to_f64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<f64, D::
 pub fn str_to_i64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::Error> {
     Ok(match Value::deserialize(deserializer)? {
         Value::String(s) => s.parse().map_err(de::Error::custom)?,
-        Value::Number(num) => num.as_i64().ok_or(de::Error::custom("Invalid number"))? as i64,
+        Value::Number(num) => {
+            num.as_i64()
+                .ok_or_else(|| de::Error::custom("Invalid number"))? as i64
+        }
         _ => return Err(de::Error::custom("wrong type")),
     })
 }
