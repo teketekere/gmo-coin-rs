@@ -67,7 +67,7 @@ impl StatusTrait for RestResponse<Status> {
 /// 取引所ステータスAPIを呼び出す。
 pub async fn get_status(http_client: &impl HttpClient) -> Result<RestResponse<Status>, Error> {
     let response = http_client
-        .get(to_url(PUBLIC_ENDPOINT, STATUS_API_PATH))
+        .get(format!("{}{}", PUBLIC_ENDPOINT, STATUS_API_PATH))
         .await?;
     let body: Status = serde_json::from_str(&response.body_text)?;
     Ok(RestResponse::<Status> {

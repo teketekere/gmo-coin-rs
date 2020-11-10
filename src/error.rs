@@ -14,6 +14,9 @@ pub enum Error {
     #[error("url parse error")]
     UrlParseError(url::ParseError),
 
+    #[error("deserialize error")]
+    DeserializeError(),
+
     #[error("Unknown error")]
     UnknownError,
 }

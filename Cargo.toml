@@ -24,3 +24,7 @@ url = "2.1"
 [[example]]
 name = "status"
 path = "examples/public/status.rs"
+
+[[example]]
+name = "ticker"
+path = "examples/public/ticker.rs"
