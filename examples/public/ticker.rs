@@ -1,6 +1,5 @@
 use gmo_coin_rs::error::Error;
 use gmo_coin_rs::http_client::Reqwest;
-use gmo_coin_rs::public::ticker::*;
 use gmo_coin_rs::public::*;
 use gmo_coin_rs::symbol::BTC;
 

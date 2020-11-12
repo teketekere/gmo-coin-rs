@@ -32,34 +32,26 @@ pub struct Status {
     pub data: Data,
 }
 
-/// 取引所ステータスのtrait。取引所が開いているかどうかなどの判定を行う関数を定義する。
-pub trait StatusTrait {
-    fn is_open(&self) -> bool;
-    fn is_pre_open(&self) -> bool;
-    fn is_maintenance(&self) -> bool;
-    fn status(&self) -> &String;
-}
-
-impl StatusTrait for RestResponse<Status> {
+impl RestResponse<Status> {
     /// 取引所が開いているか？
-    fn is_open(&self) -> bool {
+    pub fn is_open(&self) -> bool {
         self.body.data.status == EXCHANGE_STATUS_OPEN
     }
 
     /// 取引所がプレオープン中か？
     /// プレオープンは定時メンテナンスの前後30分の間。
-    fn is_pre_open(&self) -> bool {
+    pub fn is_pre_open(&self) -> bool {
         self.body.data.status == EXCHANGE_STATUS_PREOPEN
     }
 
     /// 取引所がメンテナンス中か？
     /// 定時メンテナンスは日本時間で毎週水曜15:00 - 16:00。
-    fn is_maintenance(&self) -> bool {
+    pub fn is_maintenance(&self) -> bool {
         self.body.data.status == EXCHANGE_STATUS_MAINTENANCE
     }
 
     /// 取引所のステータスを返す。
-    fn status(&self) -> &String {
+    pub fn status(&self) -> &String {
         &self.body.data.status
     }
 }

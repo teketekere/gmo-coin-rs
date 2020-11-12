@@ -1,6 +1,5 @@
 use gmo_coin_rs::error::Error;
 use gmo_coin_rs::http_client::Reqwest;
-use gmo_coin_rs::public::status::*;
 use gmo_coin_rs::public::*;
 
 /// 取引所ステータスを取得するAPIのExample

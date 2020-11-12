@@ -37,47 +37,43 @@ pub struct Ticker {
     pub data: Vec<Data>,
 }
 
-pub trait TickerTrait {
-    fn ask(&self) -> Result<i64, Error>;
-    fn bid(&self) -> Result<i64, Error>;
-    fn high(&self) -> Result<i64, Error>;
-    fn last(&self) -> Result<i64, Error>;
-    fn low(&self) -> Result<i64, Error>;
-    fn symbol(&self) -> Result<&String, Error>;
-    fn timestamp(&self) -> Result<&String, Error>;
-    fn volume(&self) -> Result<f64, Error>;
-}
-
-impl TickerTrait for RestResponse<Ticker> {
-    fn ask(&self) -> Result<i64, Error> {
+impl RestResponse<Ticker> {
+    pub fn ask(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.ask)
     }
-    fn bid(&self) -> Result<i64, Error> {
+
+    pub fn bid(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.bid)
     }
-    fn high(&self) -> Result<i64, Error> {
+
+    pub fn high(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.high)
     }
-    fn last(&self) -> Result<i64, Error> {
+
+    pub fn last(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.last)
     }
-    fn low(&self) -> Result<i64, Error> {
+
+    pub fn low(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.low)
     }
-    fn symbol(&self) -> Result<&String, Error> {
+
+    pub fn symbol(&self) -> Result<&String, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(&d.symbol)
     }
-    fn timestamp(&self) -> Result<&String, Error> {
+
+    pub fn timestamp(&self) -> Result<&String, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(&d.timestamp)
     }
-    fn volume(&self) -> Result<f64, Error> {
+
+    pub fn volume(&self) -> Result<f64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.volume)
     }
