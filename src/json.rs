@@ -1,5 +1,6 @@
 //! JSON文字列をパースするときに型変換行うための関数を定義する。
 
+use chrono::{DateTime, Utc};
 use serde::{de, Deserialize, Deserializer};
 use serde_json::Value;
 
@@ -27,9 +28,24 @@ pub fn str_to_i64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::
     })
 }
 
+/// GMOコインAPIから返ってくるタイムスタンプをchronoの日時に変換する。
+/// GMOコインのタイムスタンプはUTC。この関数でもUTCの日時を返す。
+pub fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(
+    deserializer: D,
+) -> Result<DateTime<Utc>, D::Error> {
+    let s: String = Deserialize::deserialize(deserializer)?;
+    Ok(
+        match chrono::naive::NaiveDateTime::parse_from_str(&s, "%Y-%m-%dT%H:%M:%S.%3fZ") {
+            Ok(date) => DateTime::<Utc>::from_utc(date, Utc),
+            Err(_) => return Err(de::Error::custom("wrong datetime format")),
+        },
+    )
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::json::{str_to_f64, str_to_i64};
+    use crate::json::{gmo_timestamp_to_chrono_timestamp, str_to_f64, str_to_i64};
+    use chrono::*;
     use serde::Deserialize;
 
     #[derive(Deserialize)]
@@ -41,11 +57,30 @@ mod tests {
         f: f64,
     }
 
+    #[derive(Deserialize)]
+    struct Date {
+        #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
+        d: DateTime<Utc>,
+    }
+
     #[test]
     fn test_str_to_numbers() {
         let json_str = r#"{"i": "100", "f": "-10.55"}"#;
         let json: Number = serde_json::from_str(&json_str).unwrap();
         assert_eq!(json.i, 100);
         assert_eq!(json.f, -10.55);
+    }
+
+    #[test]
+    fn test_str_to_datetime() {
+        let json_str = r#"{"d": "2019-03-19T02:15:06.001Z"}"#;
+        let json: Date = serde_json::from_str(&json_str).unwrap();
+        assert_eq!(json.d.year(), 2019);
+        assert_eq!(json.d.month(), 3);
+        assert_eq!(json.d.day(), 19);
+        assert_eq!(json.d.hour(), 2);
+        assert_eq!(json.d.minute(), 15);
+        assert_eq!(json.d.second(), 6);
+        assert_eq!(json.d.timestamp_subsec_millis(), 1);
     }
 }
