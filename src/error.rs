@@ -1,5 +1,6 @@
 //! ライブラリ内で異常が発生したときに投げるエラーを定義する。
 
+use crate::response::ErrorResponse;
 use thiserror::Error;
 
 /// 異常が発生したときに投げるエラー。
@@ -16,6 +17,9 @@ pub enum Error {
 
     #[error("deserialize error")]
     DeserializeError(),
+
+    #[error("api error")]
+    APIError(ErrorResponse),
 
     #[error("Unknown error")]
     UnknownError,

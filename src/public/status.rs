@@ -3,7 +3,7 @@
 use crate::end_point::*;
 use crate::error::Error;
 use crate::http_client::*;
-use crate::json::gmo_timestamp_to_chrono_timestamp;
+use crate::json::*;
 use crate::response::*;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -64,11 +64,7 @@ pub async fn get_status(http_client: &impl HttpClient) -> Result<RestResponse<St
     let response = http_client
         .get(format!("{}{}", PUBLIC_ENDPOINT, STATUS_API_PATH))
         .await?;
-    let body: Status = serde_json::from_str(&response.body_text)?;
-    Ok(RestResponse::<Status> {
-        http_status_code: (response.http_status_code),
-        body: (body),
-    })
+    parse_from_http_response::<Status>(&response)
 }
 
 #[cfg(test)]

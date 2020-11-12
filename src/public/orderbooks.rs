@@ -62,11 +62,7 @@ pub async fn get_orderbooks(
             PUBLIC_ENDPOINT, ORDERBOOKS_API_PATH, symbol
         ))
         .await?;
-    let body: Orderbooks = serde_json::from_str(&response.body_text)?;
-    Ok(RestResponse::<Orderbooks> {
-        http_status_code: (response.http_status_code),
-        body: (body),
-    })
+    parse_from_http_response::<Orderbooks>(&response)
 }
 
 #[cfg(test)]

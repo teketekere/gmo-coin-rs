@@ -1,5 +1,7 @@
 //! JSON文字列をパースするときに型変換行うための関数を定義する。
 
+use crate::error::Error;
+use crate::response::{ErrorResponse, RawResponse, RestResponse};
 use chrono::{DateTime, Utc};
 use serde::{de, Deserialize, Deserializer};
 use serde_json::Value;
@@ -40,6 +42,26 @@ pub fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(
             Err(_) => return Err(de::Error::custom("wrong datetime format")),
         },
     )
+}
+
+/// GMOコインのAPIを呼び出して得られるHTTPレスポンスをええ感じに構造体RestResponse<T>に詰めなおす
+pub fn parse_from_http_response<'a, T>(
+    http_response: &'a RawResponse,
+) -> Result<RestResponse<T>, Error>
+where
+    T: serde::de::Deserialize<'a>,
+{
+    let body: Result<T, serde_json::Error> = serde_json::from_str(&http_response.body_text);
+    Ok(match body {
+        Ok(b) => RestResponse {
+            http_status_code: http_response.http_status_code,
+            body: b,
+        },
+        Err(_) => {
+            let err_resp: ErrorResponse = serde_json::from_str(&http_response.body_text)?;
+            return Err(Error::APIError(err_resp));
+        }
+    })
 }
 
 #[cfg(test)]

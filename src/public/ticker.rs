@@ -93,11 +93,7 @@ pub async fn get_ticker(
             PUBLIC_ENDPOINT, TICKER_API_PATH, symbol
         ))
         .await?;
-    let body: Ticker = serde_json::from_str(&response.body_text)?;
-    Ok(RestResponse::<Ticker> {
-        http_status_code: (response.http_status_code),
-        body: (body),
-    })
+    parse_from_http_response::<Ticker>(&response)
 }
 
 #[cfg(test)]
