@@ -5,13 +5,14 @@ use crate::error::Error;
 use crate::http_client::*;
 use crate::json::*;
 use crate::response::*;
-use serde::{Deserialize, Serialize};
+use chrono::{DateTime, Utc};
+use serde::Deserialize;
 
 /// 取引所ステータスAPIのパス。
 const TICKER_API_PATH: &str = "/v1/ticker";
 
 /// 最新レートAPIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Data {
     #[serde(deserialize_with = "str_to_i64")]
     pub ask: i64,
@@ -24,16 +25,18 @@ pub struct Data {
     #[serde(deserialize_with = "str_to_i64")]
     pub low: i64,
     pub symbol: String,
-    pub timestamp: String,
+    #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
+    pub timestamp: DateTime<Utc>,
     #[serde(deserialize_with = "str_to_f64")]
     pub volume: f64,
 }
 
 /// 最新レートAPIから返ってくるレスポンスを格納する構造体。
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Ticker {
     pub status: i16,
-    pub responsetime: String,
+    #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
+    pub responsetime: DateTime<Utc>,
     pub data: Vec<Data>,
 }
 
@@ -68,7 +71,7 @@ impl RestResponse<Ticker> {
         Ok(&d.symbol)
     }
 
-    pub fn timestamp(&self) -> Result<&String, Error> {
+    pub fn timestamp(&self) -> Result<&DateTime<Utc>, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(&d.timestamp)
     }
@@ -101,6 +104,7 @@ pub async fn get_ticker(
 mod tests {
     use crate::http_client::tests::InmemClient;
     use crate::public::ticker::*;
+    use chrono::SecondsFormat;
 
     const TICKER_RESPONSE_SAMPLE: &str = r#"{
         "status": 0,
@@ -130,14 +134,24 @@ mod tests {
         let resp = get_ticker(&http_client, "BTC").await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
-        assert_eq!(resp.body.responsetime, "2019-03-19T02:15:06.014Z");
+        assert_eq!(
+            resp.body
+                .responsetime
+                .to_rfc3339_opts(SecondsFormat::Millis, true),
+            "2019-03-19T02:15:06.014Z"
+        );
         assert_eq!(resp.ask().unwrap(), 750760);
         assert_eq!(resp.bid().unwrap(), 750600);
         assert_eq!(resp.high().unwrap(), 762302);
         assert_eq!(resp.last().unwrap(), 756662);
         assert_eq!(resp.low().unwrap(), 704874);
         assert_eq!(resp.symbol().unwrap(), "BTC");
-        assert_eq!(resp.timestamp().unwrap(), "2018-03-30T12:34:56.789Z");
+        assert_eq!(
+            resp.timestamp()
+                .unwrap()
+                .to_rfc3339_opts(SecondsFormat::Millis, true),
+            "2018-03-30T12:34:56.789Z"
+        );
         assert_eq!(resp.volume().unwrap(), 194785.8484);
     }
 }

@@ -3,8 +3,10 @@
 use crate::end_point::*;
 use crate::error::Error;
 use crate::http_client::*;
+use crate::json::gmo_timestamp_to_chrono_timestamp;
 use crate::response::*;
-use serde::{Deserialize, Serialize};
+use chrono::{DateTime, Utc};
+use serde::Deserialize;
 
 /// 取引所ステータスAPIのパス。
 const STATUS_API_PATH: &str = "/v1/status";
@@ -19,16 +21,17 @@ const EXCHANGE_STATUS_PREOPEN: &str = "PREOPEN";
 const EXCHANGE_STATUS_MAINTENANCE: &str = "MAINTENANCE";
 
 /// 取引所ステータスAPIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Data {
     pub status: String,
 }
 
 /// 取引所ステータスAPIから返ってくるレスポンスを格納する構造体。
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Status {
     pub status: i16,
-    pub responsetime: String,
+    #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
+    pub responsetime: DateTime<Utc>,
     pub data: Data,
 }
 
@@ -72,6 +75,7 @@ pub async fn get_status(http_client: &impl HttpClient) -> Result<RestResponse<St
 mod tests {
     use crate::http_client::tests::InmemClient;
     use crate::public::status::*;
+    use chrono::SecondsFormat;
 
     const STATUS_RESPONSE_SAMPLE: &str = r#"{
         "status": 0,
@@ -92,7 +96,12 @@ mod tests {
         let resp = get_status(&http_client).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
-        assert_eq!(resp.body.responsetime, "2019-03-19T02:15:06.001Z");
+        assert_eq!(
+            resp.body
+                .responsetime
+                .to_rfc3339_opts(SecondsFormat::Millis, true),
+            "2019-03-19T02:15:06.001Z"
+        );
         assert_eq!(resp.status(), "OPEN");
         assert_eq!(resp.is_open(), true);
     }
