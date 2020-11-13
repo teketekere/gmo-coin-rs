@@ -1,15 +1,39 @@
 [package]
-name = "rust-docker-sample"
+name = "gmo-coin-rs"
 version = "0.1.0"
+edition = "2018"
 authors = ["teketekere <hujikoseina@gmail.com>"]
-license-file = "LICENSE"
-description = "A sample project"
-repository = "https://github.com/teketekere/rust-docker-sample"
+license = "MIT"
+description = "Client library for GMO Coin API."
+repository = "https://github.com/teketekere/gmo-coin-rs"
 readme = "README.md"
 include = [
     "**/*.rs",
-    "Cargo.toml",
-    "LICENSE",
+    "Cargo.toml"
 ]
 
 [dependencies]
+reqwest = { version = "0.10.8", features = ["json"] }
+tokio = { version = "0.2", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+async-trait = "0.1.41"
+thiserror = "1.0.22"
+url = "2.1"
+chrono = "0.4"
+
+[[example]]
+name = "status"
+path = "examples/public/status.rs"
+
+[[example]]
+name = "ticker"
+path = "examples/public/ticker.rs"
+
+[[example]]
+name = "orderbooks"
+path = "examples/public/orderbooks.rs"
+
+[[example]]
+name = "trades"
+path = "examples/public/trades.rs"

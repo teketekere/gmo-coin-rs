@@ -1,16 +1,19 @@
-# rust-docker-sample
+# gmo-coin-rs
 
-Sample project for rust with...
+Rust 製の GMOCoin API のクライアントライブラリです。
 
-- Docker(+ VSCode) develop environment
-- GitHub Actions CI/CD
+## 実装状況
 
-## Notes
+- Public API
 
-To release a crate via GitHub Actions, you need to setup GitHub secrets.
+  した
 
-- Secrets:
-  - Key: CRATES_IO_TOKEN
-  - Value: API Access token for `crates.io`
+- Public Websocket API
+- Private API
+- Private Websocket API
 
-After setup, create git tag which name is like `v.*`, and push that tag to remote.
+  まだ
+
+## 使い方
+
+`examples`に大体書いてあります。
