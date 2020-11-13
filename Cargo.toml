@@ -33,3 +33,7 @@ path = "examples/public/ticker.rs"
 [[example]]
 name = "orderbooks"
 path = "examples/public/orderbooks.rs"
+
+[[example]]
+name = "trades"
+path = "examples/public/trades.rs"
