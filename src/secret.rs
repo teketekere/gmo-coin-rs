@@ -14,7 +14,7 @@ impl Secret {
         let sign = encode(hmac::sign(&signed_key, text.as_bytes()).as_ref());
         Secret {
             api_key: String::from(api_key),
-            sign: String::from(sign),
+            sign: sign,
         }
     }
 }
