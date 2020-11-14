@@ -43,3 +43,7 @@ path = "examples/public/trades.rs"
 [[example]]
 name = "margin"
 path = "examples/private/margin.rs"
+
+[[example]]
+name = "assets"
+path = "examples/private/assets.rs"
