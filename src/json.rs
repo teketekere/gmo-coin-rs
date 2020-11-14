@@ -58,6 +58,7 @@ where
             body: b,
         },
         Err(e) => {
+            println!("{:?}", e);
             let err_resp: ErrorResponse = serde_json::from_str(&http_response.body_text)?;
             return Err(Error::APIError(err_resp));
         }
