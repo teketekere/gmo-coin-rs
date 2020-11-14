@@ -19,7 +19,7 @@ async fn main() -> Result<(), Error> {
     // 取得対象ページ、1ページ当たりの取得件数を取得する場合は次のようにする。
     // let page = 2;
     // let count = 30;
-    // let response = public_api.trades_with_options(BTC).await?;
+    // let response = public_api.trades_with_options(BTC, page, count).await?;
 
     println!("取引履歴:");
     let trades = response.trades();
