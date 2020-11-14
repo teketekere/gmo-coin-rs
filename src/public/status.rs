@@ -2,12 +2,12 @@
 
 use crate::end_point::*;
 use crate::error::Error;
+use crate::headers::Headers;
 use crate::http_client::*;
 use crate::json::*;
 use crate::response::*;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
-use std::collections::HashMap;
 
 /// 取引所ステータスAPIのパス。
 const STATUS_API_PATH: &str = "/v1/status";
@@ -63,7 +63,7 @@ impl RestResponse<Status> {
 /// 取引所ステータスAPIを呼び出す。
 pub async fn get_status(http_client: &impl HttpClient) -> Result<RestResponse<Status>, Error> {
     let url = format!("{}{}", PUBLIC_ENDPOINT, STATUS_API_PATH,);
-    let headers: HashMap<String, String> = HashMap::new();
+    let headers = Headers::create_empty_headers();
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Status>(&response)
 }
