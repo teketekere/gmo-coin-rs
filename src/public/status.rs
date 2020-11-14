@@ -24,15 +24,21 @@ const EXCHANGE_STATUS_MAINTENANCE: &str = "MAINTENANCE";
 /// 取引所ステータスAPIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
 pub struct Data {
+    /// 取引所ステータス。
     pub status: String,
 }
 
 /// 取引所ステータスAPIから返ってくるレスポンスを格納する構造体。
 #[derive(Deserialize)]
 pub struct Status {
+    /// ステータスコード。
     pub status: i16,
+
+    /// APIが呼び出された時間。
     #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
     pub responsetime: DateTime<Utc>,
+
+    /// レスポンスの`data`の部分。
     pub data: Data,
 }
 

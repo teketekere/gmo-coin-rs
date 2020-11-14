@@ -10,7 +10,10 @@ pub struct RawResponse {
 
 /// Public API, Private APIの結果として返す構造体。
 pub struct RestResponse<T> {
+    /// HTTPステータスコード。
     pub http_status_code: u16,
+
+    /// GMOコインからのレスポンスのボディ部分。
     pub body: T,
 }
 

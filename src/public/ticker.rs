@@ -16,19 +16,34 @@ const TICKER_API_PATH: &str = "/v1/ticker";
 /// 最新レートAPIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
 pub struct Data {
+    /// ASK。
     #[serde(deserialize_with = "str_to_i64")]
     pub ask: i64,
+
+    /// BID。
     #[serde(deserialize_with = "str_to_i64")]
     pub bid: i64,
+
+    /// 高値。
     #[serde(deserialize_with = "str_to_i64")]
     pub high: i64,
+
+    /// 終値。
     #[serde(deserialize_with = "str_to_i64")]
     pub last: i64,
+
+    /// 安値。
     #[serde(deserialize_with = "str_to_i64")]
     pub low: i64,
+
+    /// 銘柄名。
     pub symbol: String,
     #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
+
+    /// 時刻。
     pub timestamp: DateTime<Utc>,
+
+    /// 24時間の取引量。
     #[serde(deserialize_with = "str_to_f64")]
     pub volume: f64,
 }
@@ -36,48 +51,61 @@ pub struct Data {
 /// 最新レートAPIから返ってくるレスポンスを格納する構造体。
 #[derive(Deserialize)]
 pub struct Ticker {
+    /// ステータスコード。
     pub status: i16,
+
+    /// APIが呼び出された時間。
     #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
     pub responsetime: DateTime<Utc>,
+
+    /// レスポンスの`data`の部分。
     pub data: Vec<Data>,
 }
 
 impl RestResponse<Ticker> {
+    /// ASKを取得する。
     pub fn ask(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.ask)
     }
 
+    /// BIDを取得する。
     pub fn bid(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.bid)
     }
 
+    /// 高値を取得する。
     pub fn high(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.high)
     }
 
+    /// 終値を取得する。
     pub fn last(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.last)
     }
 
+    /// 安値を取得する。
     pub fn low(&self) -> Result<i64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.low)
     }
 
+    /// 銘柄名を取得する。
     pub fn symbol(&self) -> Result<&String, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(&d.symbol)
     }
 
+    /// 時刻を取得する。
     pub fn timestamp(&self) -> Result<&DateTime<Utc>, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(&d.timestamp)
     }
 
+    /// 取引量を取得する。
     pub fn volume(&self) -> Result<f64, Error> {
         let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
         Ok(d.volume)

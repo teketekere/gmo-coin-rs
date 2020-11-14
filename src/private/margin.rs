@@ -21,12 +21,19 @@ const MARGIN_API_METHOD: &str = "GET";
 #[derive(Deserialize)]
 #[allow(non_snake_case)]
 pub struct Data {
+    /// 時価評価総額。
     #[serde(deserialize_with = "str_to_i64")]
     actualProfitLoss: i64,
+
+    /// 取引余力。
     #[serde(deserialize_with = "str_to_i64")]
     availableAmount: i64,
+
+    /// 拘束証拠金。
     #[serde(deserialize_with = "str_to_i64")]
     margin: i64,
+
+    /// 評価損益。
     #[serde(deserialize_with = "str_to_i64")]
     profitLoss: i64,
 }
@@ -34,25 +41,34 @@ pub struct Data {
 /// 余力APIから返ってくるレスポンスを格納する構造体。
 #[derive(Deserialize)]
 pub struct Margin {
+    /// ステータスコード。
     pub status: i16,
+
+    /// APIが呼び出された時間。
     #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
     pub responsetime: DateTime<Utc>,
+
+    /// レスポンスの`data`の部分。
     pub data: Data,
 }
 
 impl RestResponse<Margin> {
+    /// 時価評価総額を取得する。
     pub fn actual_profitloss(&self) -> i64 {
         self.body.data.actualProfitLoss
     }
 
+    /// 取引余力を取得する。
     pub fn availabel_amount(&self) -> i64 {
         self.body.data.availableAmount
     }
 
+    /// 拘束証拠金を取得する。
     pub fn margin(&self) -> i64 {
         self.body.data.margin
     }
 
+    /// 評価損益を取得する。
     pub fn profit_loss(&self) -> i64 {
         self.body.data.profitLoss
     }

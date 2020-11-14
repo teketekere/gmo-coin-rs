@@ -52,9 +52,14 @@ impl Data {
 /// 資産残高APIから返ってくるレスポンスを格納する構造体。
 #[derive(Deserialize)]
 pub struct Assets {
+    /// ステータスコード。
     pub status: i16,
+
+    /// APIが呼び出された時間。
     #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
     pub responsetime: DateTime<Utc>,
+
+    /// レスポンスの`data`の部分。
     pub data: Vec<Data>,
 }
 

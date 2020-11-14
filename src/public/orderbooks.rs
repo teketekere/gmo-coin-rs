@@ -16,8 +16,11 @@ const ORDERBOOKS_API_PATH: &str = "/v1/orderbooks";
 /// 板情報APIから返ってくるレスポンスのうちaskとbidのデータを格納する構造体。
 #[derive(Deserialize)]
 pub struct PriceAndSize {
+    /// 価格。
     #[serde(deserialize_with = "str_to_i64")]
     pub price: i64,
+
+    /// 注文数量。
     #[serde(deserialize_with = "str_to_f64")]
     pub size: f64,
 }
@@ -25,29 +28,42 @@ pub struct PriceAndSize {
 /// 板情報APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
 pub struct Data {
+    /// 売り注文の情報。
     pub asks: Vec<PriceAndSize>,
+
+    /// 買い注文の情報。
     pub bids: Vec<PriceAndSize>,
+
+    /// 銘柄名。
     pub symbol: String,
 }
 
 /// 板情報APIから返ってくるレスポンスを格納する構造体。
 #[derive(Deserialize)]
 pub struct Orderbooks {
+    /// ステータスコード。
     pub status: i16,
+
+    /// APIが呼び出された時間。
     #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
     pub responsetime: DateTime<Utc>,
+
+    /// レスポンスの`data`の部分。
     pub data: Data,
 }
 
 impl RestResponse<Orderbooks> {
+    /// 売り注文の情報を取得する。
     pub fn asks(&self) -> &Vec<PriceAndSize> {
         &self.body.data.asks
     }
 
+    /// 買い注文の情報を取得する。
     pub fn bids(&self) -> &Vec<PriceAndSize> {
         &self.body.data.bids
     }
 
+    /// 銘柄名を取得する。
     pub fn symbol(&self) -> &String {
         &self.body.data.symbol
     }
