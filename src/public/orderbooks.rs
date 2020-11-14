@@ -13,7 +13,7 @@ use serde::Deserialize;
 /// 板情報APIのパス。
 const ORDERBOOKS_API_PATH: &str = "/v1/orderbooks";
 
-/// 板情報APIから返ってくるレスポンスのうちaskとbidのデータを格納する構造体。
+/// 価格と注文数量を格納する構造体。
 #[derive(Deserialize)]
 pub struct PriceAndSize {
     /// 価格。

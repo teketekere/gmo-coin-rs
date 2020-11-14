@@ -15,7 +15,7 @@ const ORDERS_API_PATH: &str = "/v1/orders";
 /// 注文情報取得APIを呼び出すときのメソッド。
 const ORDERS_API_METHOD: &str = "GET";
 
-/// 注文情報取得APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
+/// 注文情報を格納する構造体。
 #[derive(Deserialize)]
 #[allow(non_snake_case)]
 pub struct Order {

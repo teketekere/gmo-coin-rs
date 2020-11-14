@@ -13,7 +13,7 @@ use serde::Deserialize;
 /// 取引履歴APIのパス。
 const TRADES_API_PATH: &str = "/v1/trades";
 
-/// 取引履歴APIから返ってくるレスポンスのうち取引データ(price, side, size, timestamp)を格納する構造体。
+/// 取引データ(price, side, size, timestamp)を格納する構造体。
 #[derive(Deserialize)]
 pub struct Trade {
     /// 約定価格。
@@ -32,7 +32,7 @@ pub struct Trade {
     pub timestamp: DateTime<Utc>,
 }
 
-/// 取引履歴APIから返ってくるレスポンスのうち取得ページに関する情報(current_page, count)を格納する構造体。
+/// 取得ページに関する情報(current_page, count)を格納する構造体。
 #[derive(Deserialize)]
 #[allow(non_snake_case)]
 pub struct Pagination {
