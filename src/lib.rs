@@ -8,4 +8,5 @@ pub mod http_client;
 pub mod json;
 pub mod public;
 pub mod response;
+pub mod secret;
 pub mod symbol;
