@@ -30,6 +30,17 @@ pub fn str_to_i64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::
     })
 }
 
+/// 注文Idを文字列に変換する。
+/// GMOコインのお知らせを見ると注文Idは2020年11月4日から文字列になると書いてあるが、2020年11月14日現在数値で返ってくる。
+/// 将来的に文字列に変更されてもいいように、数値でも文字列でも文字列に直すようにしておく。
+pub fn orderid_to_str<'de, D: Deserializer<'de>>(deserializer: D) -> Result<String, D::Error> {
+    Ok(match Value::deserialize(deserializer)? {
+        Value::String(s) => s,
+        Value::Number(num) => num.to_string(),
+        _ => return Err(de::Error::custom("wrong type")),
+    })
+}
+
 /// GMOコインAPIから返ってくるタイムスタンプをchronoの日時に変換する。
 /// GMOコインのタイムスタンプはUTC。この関数でもUTCの日時を返す。
 pub fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(
@@ -57,8 +68,7 @@ where
             http_status_code: http_response.http_status_code,
             body: b,
         },
-        Err(e) => {
-            println!("{:?}", e);
+        Err(_) => {
             let err_resp: ErrorResponse = serde_json::from_str(&http_response.body_text)?;
             return Err(Error::APIError(err_resp));
         }
