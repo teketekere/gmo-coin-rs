@@ -5,6 +5,7 @@ use crate::error::Error;
 use crate::http_client::*;
 use crate::json::*;
 use crate::response::*;
+use crate::symbol::*;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -62,14 +63,18 @@ impl RestResponse<Trades> {
 /// 取引履歴APIを呼び出す。引数で取得対象ページと1ページ当たりの取得件数を指定する。
 pub async fn get_trades_with_options(
     http_client: &impl HttpClient,
-    symbol: &str,
+    symbol: &Symbol,
     page: i32,
     count: i32,
 ) -> Result<RestResponse<Trades>, Error> {
     let response = http_client
         .get(format!(
             "{}{}?symbol={}&page={}&count={}",
-            PUBLIC_ENDPOINT, TRADES_API_PATH, symbol, page, count
+            PUBLIC_ENDPOINT,
+            TRADES_API_PATH,
+            to_string(&symbol),
+            page,
+            count
         ))
         .await?;
     parse_from_http_response::<Trades>(&response)
@@ -78,15 +83,16 @@ pub async fn get_trades_with_options(
 /// 取引履歴APIを呼び出す。
 pub async fn get_trades(
     http_client: &impl HttpClient,
-    symbol: &str,
+    symbol: &Symbol,
 ) -> Result<RestResponse<Trades>, Error> {
-    get_trades_with_options(http_client, symbol, 1, 100).await
+    get_trades_with_options(http_client, &symbol, 1, 100).await
 }
 
 #[cfg(test)]
 mod tests {
     use crate::http_client::tests::InmemClient;
     use crate::public::trades::*;
+    use crate::symbol::Symbol;
     use chrono::SecondsFormat;
 
     const TRADES_RESPONSE_SAMPLE: &str = r#"
@@ -124,7 +130,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_trades(&http_client, "BTC").await.unwrap();
+        let resp = get_trades(&http_client, &Symbol::Btc).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

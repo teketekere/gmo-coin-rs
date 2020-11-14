@@ -5,6 +5,7 @@ use crate::error::Error;
 use crate::http_client::*;
 use crate::json::*;
 use crate::response::*;
+use crate::symbol::*;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -54,12 +55,14 @@ impl RestResponse<Orderbooks> {
 /// 板情報APIを呼び出す。
 pub async fn get_orderbooks(
     http_client: &impl HttpClient,
-    symbol: &str,
+    symbol: &Symbol,
 ) -> Result<RestResponse<Orderbooks>, Error> {
     let response = http_client
         .get(format!(
             "{}{}?symbol={}",
-            PUBLIC_ENDPOINT, ORDERBOOKS_API_PATH, symbol
+            PUBLIC_ENDPOINT,
+            ORDERBOOKS_API_PATH,
+            to_string(&symbol)
         ))
         .await?;
     parse_from_http_response::<Orderbooks>(&response)
@@ -69,6 +72,7 @@ pub async fn get_orderbooks(
 mod tests {
     use crate::http_client::tests::InmemClient;
     use crate::public::orderbooks::*;
+    use crate::symbol::Symbol;
     use chrono::SecondsFormat;
 
     const ORDERBOOKS_RESPONSE_SAMPLE: &str = r#"{
@@ -103,7 +107,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_orderbooks(&http_client, "BTC").await.unwrap();
+        let resp = get_orderbooks(&http_client, &Symbol::Btc).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(
