@@ -6,25 +6,25 @@ use thiserror::Error;
 /// 異常が発生したときに投げるエラー。
 #[derive(Debug, Error)]
 pub enum Error {
-    #[error("reqwest error")]
+    #[error("reqwest使ってるとこで何かあったわ")]
     ReqwestError(reqwest::Error),
 
-    #[error("serde_json error")]
+    #[error("HTTPレスポンスのボディをserde_jsonで構造体にバインディングしてるとこで何かあったわ")]
     SerdeJsonError(serde_json::Error),
 
-    #[error("url parse error")]
+    #[error("URLうまく作れんかったわ")]
     UrlParseError(url::ParseError),
 
-    #[error("deserialize error")]
+    #[error("何なんかよー分からんわ")]
     DeserializeError(),
 
-    #[error("api error")]
+    #[error("GMOコインのAPIからエラーが返って来とるで")]
     APIError(ErrorResponse),
 
-    #[error("env var error")]
+    #[error("環境変数読み取れなんだわ")]
     EnvVarError(std::env::VarError),
 
-    #[error("Unknown error")]
+    #[error("何もよー分かりまへん")]
     UnknownError,
 }
 
