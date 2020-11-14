@@ -21,16 +21,16 @@ async fn main() -> Result<(), Error> {
     // let count = 30;
     // let response = public_api.trades_with_options(BTC, page, count).await?;
 
-    println!("取引履歴:");
+    println!("取得対象ページ: {}", response.page());
+    println!("取得件数: {}\n", response.count());
+
     let trades = response.trades();
     for trade in trades {
-        println!(
-            "約定価格: {}, 売買区分: {}, 約定数量: {}, 約定日時: {}",
-            trade.price, trade.side, trade.size, trade.timestamp
-        );
+        println!("約定価格: {}", trade.price);
+        println!("売買区分: {}", trade.side);
+        println!("約定数量: {}", trade.size);
+        println!("約定日時: {}\n", trade.timestamp);
     }
-    println!("取得対象ページ: {}", response.pagination().currentPage);
-    println!("取得件数: {}", response.pagination().count);
 
     println!("HTTPステータスコード: {}", response.http_status_code);
     println!("ステータスコード: {}", response.body.status);
