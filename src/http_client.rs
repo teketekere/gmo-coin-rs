@@ -18,18 +18,15 @@ pub struct Reqwest;
 #[async_trait]
 impl HttpClient for Reqwest {
     async fn get(&self, url: String, headers: &Headers) -> Result<RawResponse, Error> {
-        let url_as_reqwest_style = reqwest::Url::parse(&url)?;
-        let mut request_builder = reqwest::Client::new().get(url_as_reqwest_style);
+        let mut request_builder = reqwest::Client::new().get(reqwest::Url::parse(&url)?);
         for (key, value) in headers {
             request_builder = request_builder.header(key, value);
         }
 
         let response = request_builder.send().await?;
-        let status_code = response.status().as_u16();
-        let body = response.text().await?;
         Ok(RawResponse {
-            http_status_code: (status_code),
-            body_text: (body),
+            http_status_code: (response.status().as_u16()),
+            body_text: (response.text().await?),
         })
     }
 }
