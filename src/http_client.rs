@@ -3,11 +3,16 @@
 use crate::error::*;
 use crate::response::*;
 use async_trait::async_trait;
+use std::collections::HashMap;
 
 /// HTTPクライアントのtrait。GET, POSTとか。
 #[async_trait]
 pub trait HttpClient {
-    async fn get(&self, url: String) -> Result<RawResponse, Error>;
+    async fn get(
+        &self,
+        url: String,
+        headers: &HashMap<String, String>,
+    ) -> Result<RawResponse, Error>;
 }
 
 /// ネットワークアクセス時に用いるHttpクライアント。
@@ -16,9 +21,18 @@ pub struct Reqwest;
 
 #[async_trait]
 impl HttpClient for Reqwest {
-    async fn get(&self, url: String) -> Result<RawResponse, Error> {
+    async fn get(
+        &self,
+        url: String,
+        headers: &HashMap<String, String>,
+    ) -> Result<RawResponse, Error> {
         let url_as_reqwest_style = reqwest::Url::parse(&url)?;
-        let response = reqwest::get(url_as_reqwest_style).await?;
+        let mut request_builder = reqwest::Client::new().get(url_as_reqwest_style);
+        for (key, value) in headers {
+            request_builder = request_builder.header(key, value);
+        }
+
+        let response = request_builder.send().await?;
         let status_code = response.status().as_u16();
         let body = response.text().await?;
         Ok(RawResponse {
@@ -41,7 +55,11 @@ pub mod tests {
 
     #[async_trait]
     impl HttpClient for InmemClient {
-        async fn get(&self, _url: String) -> Result<RawResponse, Error> {
+        async fn get(
+            &self,
+            _url: String,
+            _headers: &HashMap<String, String>,
+        ) -> Result<RawResponse, Error> {
             if (self.return_error) {
                 return Err(Error::UnknownError {});
             }

@@ -8,6 +8,7 @@ use crate::response::*;
 use crate::symbol::*;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use std::collections::HashMap;
 
 /// 取引所ステータスAPIのパス。
 const TICKER_API_PATH: &str = "/v1/ticker";
@@ -88,14 +89,14 @@ pub async fn get_ticker(
     http_client: &impl HttpClient,
     symbol: &Symbol,
 ) -> Result<RestResponse<Ticker>, Error> {
-    let response = http_client
-        .get(format!(
-            "{}{}?symbol={}",
-            PUBLIC_ENDPOINT,
-            TICKER_API_PATH,
-            to_string(&symbol)
-        ))
-        .await?;
+    let url = format!(
+        "{}{}?symbol={}",
+        PUBLIC_ENDPOINT,
+        TICKER_API_PATH,
+        to_string(&symbol)
+    );
+    let headers: HashMap<String, String> = HashMap::new();
+    let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Ticker>(&response)
 }
 

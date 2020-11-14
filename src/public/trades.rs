@@ -8,6 +8,7 @@ use crate::response::*;
 use crate::symbol::*;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use std::collections::HashMap;
 
 /// 取引履歴APIのパス。
 const TRADES_API_PATH: &str = "/v1/trades";
@@ -67,16 +68,16 @@ pub async fn get_trades_with_options(
     page: i32,
     count: i32,
 ) -> Result<RestResponse<Trades>, Error> {
-    let response = http_client
-        .get(format!(
-            "{}{}?symbol={}&page={}&count={}",
-            PUBLIC_ENDPOINT,
-            TRADES_API_PATH,
-            to_string(&symbol),
-            page,
-            count
-        ))
-        .await?;
+    let url = format!(
+        "{}{}?symbol={}&page={}&count={}",
+        PUBLIC_ENDPOINT,
+        TRADES_API_PATH,
+        to_string(&symbol),
+        page,
+        count,
+    );
+    let headers: HashMap<String, String> = HashMap::new();
+    let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Trades>(&response)
 }
 
