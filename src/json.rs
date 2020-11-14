@@ -57,11 +57,17 @@ where
             http_status_code: http_response.http_status_code,
             body: b,
         },
-        Err(_) => {
+        Err(e) => {
             let err_resp: ErrorResponse = serde_json::from_str(&http_response.body_text)?;
             return Err(Error::APIError(err_resp));
         }
     })
+}
+
+/// GMOコインからのレスポンスでフィールドが無い場合のデフォルト値。
+/// 使用箇所は注文情報取得APIなど。
+pub fn get_string_default_value() -> String {
+    "NONE".to_string()
 }
 
 #[cfg(test)]
