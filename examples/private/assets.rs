@@ -30,8 +30,7 @@ async fn main() -> Result<(), Error> {
         println!("資産残高[円]: {}円", asset.amount_as_jpy());
         println!("利用可能金額: {}", asset.available);
         println!("利用可能金額[円]: {}円", asset.available_as_jpy());
-        println!("円転レート: {}", asset.conversionRate);
-        println!("");
+        println!("円転レート: {}\n", asset.conversionRate);
     }
 
     println!("HTTPステータスコード: {}", response.http_status_code);

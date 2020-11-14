@@ -22,7 +22,7 @@ async fn main() -> Result<(), Error> {
     let api_key = std::env::var("GMO_API_KEY")?;
     let secret_key = std::env::var("GMO_API_SECRET")?;
     let order_id: String = std::env::var("GMO_ORDER_IDS")?;
-    let order_ids = order_id.split(',').collect();
+    let order_ids: Vec<&str> = order_id.split(',').collect();
 
     let http_client = Reqwest;
     let private_api = PrivateAPI::<Reqwest> { http_client };
@@ -45,8 +45,7 @@ async fn main() -> Result<(), Error> {
         println!("注文ステータス : {}", order.status);
         println!("取消区分 : {}", order.cancelType);
         println!("執行数量条件 : {}", order.timeInForce);
-        println!("注文日時 : {}", order.timestamp);
-        println!("");
+        println!("注文日時 : {}\n", order.timestamp);
     }
 
     println!("HTTPステータスコード: {}", response.http_status_code);

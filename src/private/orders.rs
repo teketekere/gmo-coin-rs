@@ -107,7 +107,7 @@ pub async fn get_orders(
     http_client: &impl HttpClient,
     api_key: &str,
     secret_key: &str,
-    order_ids: &Vec<&str>,
+    order_ids: &[&str],
 ) -> Result<RestResponse<Orders>, Error> {
     let url = format!(
         "{}{}?orderId={}",

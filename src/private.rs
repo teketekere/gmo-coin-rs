@@ -64,7 +64,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         &self,
         api_key: &str,
         secret_key: &str,
-        order_ids: &Vec<&str>,
+        order_ids: &[&str],
     ) -> Result<RestResponse<Orders>, Error> {
         let response = get_orders(&self.http_client, &api_key, &secret_key, &order_ids).await?;
         Ok(response)

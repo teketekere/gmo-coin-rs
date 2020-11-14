@@ -37,7 +37,7 @@ impl Headers {
         let mut headers: HashMap<String, String> = HashMap::new();
         headers.insert(String::from("API-KEY"), secret.api_key.clone());
         headers.insert(String::from("API-TIMESTAMP"), timestamp.to_string());
-        headers.insert(String::from("API-SIGN"), secret.sign.clone());
+        headers.insert(String::from("API-SIGN"), secret.sign);
         Headers(headers)
     }
 }
