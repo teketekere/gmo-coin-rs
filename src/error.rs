@@ -21,6 +21,9 @@ pub enum Error {
     #[error("api error")]
     APIError(ErrorResponse),
 
+    #[error("env var error")]
+    EnvVarError(std::env::VarError),
+
     #[error("Unknown error")]
     UnknownError,
 }
@@ -40,5 +43,11 @@ impl From<serde_json::Error> for Error {
 impl From<url::ParseError> for Error {
     fn from(e: url::ParseError) -> Self {
         Error::UrlParseError(e)
+    }
+}
+
+impl From<std::env::VarError> for Error {
+    fn from(e: std::env::VarError) -> Self {
+        Error::EnvVarError(e)
     }
 }
