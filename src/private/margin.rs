@@ -6,8 +6,6 @@ use crate::headers::Headers;
 use crate::http_client::*;
 use crate::json::*;
 use crate::response::*;
-use crate::secret::Secret;
-use crate::timestamp::get_timestamp;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -81,10 +79,13 @@ pub async fn get_margin(
     secret_key: &str,
 ) -> Result<RestResponse<Margin>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, MARGIN_API_PATH,);
-    let timestamp = get_timestamp();
-    let text = format!("{}{}{}", timestamp, MARGIN_API_METHOD, MARGIN_API_PATH);
-    let secret = Secret::create(&api_key, &secret_key, &text);
-    let headers = Headers::create_get_headers(&secret, timestamp);
+    let headers = Headers::create_get_headers(
+        &api_key,
+        &secret_key,
+        &MARGIN_API_METHOD,
+        &MARGIN_API_PATH,
+        "",
+    );
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Margin>(&response)
 }
