@@ -25,10 +25,8 @@ async fn main() -> Result<(), Error> {
     println!("timestamp: {}", response.timestamp().unwrap());
     println!("symbol: {}", response.symbol().unwrap());
 
-    println!(
-        "HTTPステータスコード: {}\nステータスコード: {}\nAPIを呼び出した時間: {}",
-        response.http_status_code, response.body.status, response.body.responsetime,
-    );
-
+    println!("HTTPステータスコード: {}", response.http_status_code);
+    println!("ステータスコード: {}", response.body.status);
+    println!("APIを呼び出した時間: {}", response.body.responsetime,);
     Ok(())
 }

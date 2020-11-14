@@ -29,14 +29,11 @@ async fn main() -> Result<(), Error> {
             trade.price, trade.side, trade.size, trade.timestamp
         );
     }
-
     println!("取得対象ページ: {}", response.pagination().currentPage);
     println!("取得件数: {}", response.pagination().count);
 
-    println!(
-        "HTTPステータスコード: {}\nステータスコード: {}\nAPIを呼び出した時間: {}",
-        response.http_status_code, response.body.status, response.body.responsetime,
-    );
-
+    println!("HTTPステータスコード: {}", response.http_status_code);
+    println!("ステータスコード: {}", response.body.status);
+    println!("APIを呼び出した時間: {}", response.body.responsetime,);
     Ok(())
 }

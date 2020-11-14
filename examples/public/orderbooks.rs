@@ -28,12 +28,10 @@ async fn main() -> Result<(), Error> {
         println!("price: {}, size: {}", bid.price, bid.size);
     }
 
-    println!("symbol: {}", response.symbol());
+    println!("銘柄: {}", response.symbol());
 
-    println!(
-        "HTTPステータスコード: {}\nステータスコード: {}\nAPIを呼び出した時間: {}",
-        response.http_status_code, response.body.status, response.body.responsetime,
-    );
-
+    println!("HTTPステータスコード: {}", response.http_status_code);
+    println!("ステータスコード: {}", response.body.status);
+    println!("APIを呼び出した時間: {}", response.body.responsetime,);
     Ok(())
 }
