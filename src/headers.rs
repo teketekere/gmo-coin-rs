@@ -29,10 +29,9 @@ impl Headers {
         secret_key: &str,
         method: &str,
         path: &str,
-        parameters: &str,
     ) -> Headers {
         let timestamp = get_timestamp();
-        let text = format!("{}{}{}{}", timestamp, method, path, parameters);
+        let text = format!("{}{}{}", timestamp, method, path);
         let secret = Secret::create(&api_key, &secret_key, &text);
 
         let mut headers: HashMap<String, String> = HashMap::new();

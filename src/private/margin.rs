@@ -79,13 +79,8 @@ pub async fn get_margin(
     secret_key: &str,
 ) -> Result<RestResponse<Margin>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, MARGIN_API_PATH,);
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &MARGIN_API_METHOD,
-        &MARGIN_API_PATH,
-        "",
-    );
+    let headers =
+        Headers::create_get_headers(&api_key, &secret_key, &MARGIN_API_METHOD, &MARGIN_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Margin>(&response)
 }

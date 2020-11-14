@@ -75,13 +75,8 @@ pub async fn get_assets(
     secret_key: &str,
 ) -> Result<RestResponse<Assets>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, ASSETS_API_PATH,);
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &ASSETS_API_METHOD,
-        &ASSETS_API_PATH,
-        "",
-    );
+    let headers =
+        Headers::create_get_headers(&api_key, &secret_key, &ASSETS_API_METHOD, &ASSETS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Assets>(&response)
 }
