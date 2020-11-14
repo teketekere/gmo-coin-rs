@@ -47,3 +47,7 @@ path = "examples/private/margin.rs"
 [[example]]
 name = "assets"
 path = "examples/private/assets.rs"
+
+[[example]]
+name = "orders"
+path = "examples/private/orders.rs"
