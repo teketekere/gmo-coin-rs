@@ -1,12 +1,11 @@
 //! 有効注文一覧APIを実装する。
 
+use crate::dto::{Order, Pagination};
 use crate::end_point::*;
 use crate::error::Error;
 use crate::headers::Headers;
 use crate::http_client::*;
 use crate::json::*;
-use crate::private::orders::Order as ActiveOrder;
-use crate::public::trades::Pagination;
 use crate::response::*;
 use crate::symbol::{to_string, Symbol};
 use chrono::{DateTime, Utc};
@@ -25,7 +24,7 @@ pub struct Data {
     pub pagination: Pagination,
 
     /// 注文情報の配列。
-    pub list: Vec<ActiveOrder>,
+    pub list: Vec<Order>,
 }
 
 /// 有効注文一覧APIから返ってくるレスポンスを格納する構造体。
@@ -44,7 +43,7 @@ pub struct ActiveOrders {
 
 impl RestResponse<ActiveOrders> {
     /// 有効注文一覧が格納された配列を取得する。
-    pub fn active_orders(&self) -> &Vec<ActiveOrder> {
+    pub fn active_orders(&self) -> &Vec<Order> {
         &self.body.data.list
     }
 

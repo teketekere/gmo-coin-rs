@@ -2,6 +2,7 @@
 
 #![crate_name = "gmo_coin_rs"]
 
+pub mod dto;
 pub mod end_point;
 pub mod error;
 pub mod headers;

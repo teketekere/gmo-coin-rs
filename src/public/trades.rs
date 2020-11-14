@@ -1,5 +1,6 @@
 //! 取引履歴APIを実装する。
 
+use crate::dto::{Pagination, Trade};
 use crate::end_point::*;
 use crate::error::Error;
 use crate::headers::Headers;
@@ -12,38 +13,6 @@ use serde::Deserialize;
 
 /// 取引履歴APIのパス。
 const TRADES_API_PATH: &str = "/v1/trades";
-
-/// 取引データ(price, side, size, timestamp)を格納する構造体。
-#[derive(Deserialize)]
-pub struct Trade {
-    /// 約定価格。
-    #[serde(deserialize_with = "str_to_i64")]
-    pub price: i64,
-
-    /// 売買区分。"BUY" or "SELL"。
-    pub side: String,
-
-    /// 約定数量。
-    #[serde(deserialize_with = "str_to_f64")]
-    pub size: f64,
-
-    /// 約定日時。
-    #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
-    pub timestamp: DateTime<Utc>,
-}
-
-/// 取得ページに関する情報(current_page, count)を格納する構造体。
-#[derive(Deserialize)]
-#[allow(non_snake_case)]
-pub struct Pagination {
-    /// 取得した取引履歴のページ番号。
-    #[serde(deserialize_with = "str_to_i64")]
-    pub currentPage: i64,
-
-    /// 何件取引履歴を取得したか。
-    #[serde(deserialize_with = "str_to_i64")]
-    pub count: i64,
-}
 
 /// 取引履歴APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
