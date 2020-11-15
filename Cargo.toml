@@ -59,3 +59,7 @@ path = "examples/private/active_orders.rs"
 [[example]]
 name = "executions"
 path = "examples/private/executions.rs"
+
+[[example]]
+name = "latest_executions"
+path = "examples/private/latest_executions.rs"

@@ -3,6 +3,7 @@
 pub mod active_orders;
 pub mod assets;
 pub mod executions;
+pub mod latest_executions;
 pub mod margin;
 pub mod orders;
 
@@ -14,6 +15,9 @@ use crate::private::active_orders::{
 use crate::private::assets::{request_assets, Assets};
 use crate::private::executions::{
     request_executions_with_execution_id, request_executions_with_order_id, Executions,
+};
+use crate::private::latest_executions::{
+    request_latest_executions, request_latest_executions_with_options, LatestExecutions,
 };
 use crate::private::margin::{request_margin, Margin};
 use crate::private::orders::{request_orders, Orders};
@@ -164,6 +168,55 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
             &api_key,
             &secret_key,
             &execution_id,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 最新の約定一覧APIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    ///
+    pub async fn latest_executions(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+    ) -> Result<RestResponse<LatestExecutions>, Error> {
+        let response =
+            request_latest_executions(&self.http_client, &api_key, &secret_key, &symbol).await?;
+        Ok(response)
+    }
+
+    /// 最新の約定一覧APIをオプション引数付きで呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `page` - 取得対象ページ。
+    /// * `count` - 1ページ当たりの取得件数。
+    ///
+    pub async fn latest_executions_with_options(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        page: i32,
+        count: i32,
+    ) -> Result<RestResponse<LatestExecutions>, Error> {
+        let response = request_latest_executions_with_options(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &symbol,
+            page,
+            count,
         )
         .await?;
         Ok(response)
