@@ -66,7 +66,7 @@ pub async fn request_trades(
         "{}{}?symbol={}&page={}&count={}",
         PUBLIC_ENDPOINT,
         TRADES_API_PATH,
-        to_string(&symbol),
+        symbol.to_string(),
         page,
         count,
     );

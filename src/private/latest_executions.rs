@@ -7,7 +7,7 @@ use crate::headers::Headers;
 use crate::http_client::*;
 use crate::json::*;
 use crate::response::*;
-use crate::symbol::{to_string, Symbol};
+use crate::symbol::Symbol;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -73,7 +73,7 @@ pub async fn request_latest_executions(
         "{}{}?symbol={}&page={}&count={}",
         PRIVATE_ENDPOINT,
         LATEST_EXECUTIONS_API_PATH,
-        to_string(&symbol),
+        symbol.to_string(),
         page,
         count
     );

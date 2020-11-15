@@ -121,7 +121,7 @@ pub async fn request_ticker(
         "{}{}?symbol={}",
         PUBLIC_ENDPOINT,
         TICKER_API_PATH,
-        to_string(&symbol)
+        symbol.to_string(),
     );
     let headers = Headers::create_empty_headers();
     let response = http_client.get(url, &headers).await?;

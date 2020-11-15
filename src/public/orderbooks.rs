@@ -78,7 +78,7 @@ pub async fn request_orderbooks(
         "{}{}?symbol={}",
         PUBLIC_ENDPOINT,
         ORDERBOOKS_API_PATH,
-        to_string(&symbol)
+        symbol.to_string(),
     );
     let headers = Headers::create_empty_headers();
     let response = http_client.get(url, &headers).await?;

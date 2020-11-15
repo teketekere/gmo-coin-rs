@@ -44,19 +44,21 @@ pub const LTC_JPY: &str = "LTC_JPY";
 /// リップル/円（レバレッジ取引）の銘柄名
 pub const XRP_JPY: &str = "XRP_JPY";
 
-/// 取引銘柄を文字列に変換する。
-pub fn to_string(symbol: &Symbol) -> &str {
-    match symbol {
-        Symbol::Btc => BTC,
-        Symbol::Eth => ETH,
-        Symbol::Bch => BCH,
-        Symbol::Ltc => LTC,
-        Symbol::Xrp => XRP,
-        Symbol::BtcJpy => BTC_JPY,
-        Symbol::EthJpy => ETH_JPY,
-        Symbol::BchJpy => BCH_JPY,
-        Symbol::LtcJpy => LTC_JPY,
-        Symbol::XprJpy => XRP_JPY,
+impl Symbol {
+    /// 取引銘柄を文字列に変換する。
+    pub fn to_string(&self) -> &str {
+        match self {
+            Symbol::Btc => BTC,
+            Symbol::Eth => ETH,
+            Symbol::Bch => BCH,
+            Symbol::Ltc => LTC,
+            Symbol::Xrp => XRP,
+            Symbol::BtcJpy => BTC_JPY,
+            Symbol::EthJpy => ETH_JPY,
+            Symbol::BchJpy => BCH_JPY,
+            Symbol::LtcJpy => LTC_JPY,
+            Symbol::XprJpy => XRP_JPY,
+        }
     }
 }
 
@@ -66,15 +68,8 @@ mod tests {
 
     #[test]
     fn test_to_string() {
-        assert_eq!(to_string(&Symbol::Btc), BTC);
-        assert_eq!(to_string(&Symbol::Eth), ETH);
-        assert_eq!(to_string(&Symbol::Bch), BCH);
-        assert_eq!(to_string(&Symbol::Ltc), LTC);
-        assert_eq!(to_string(&Symbol::Xrp), XRP);
-        assert_eq!(to_string(&Symbol::BtcJpy), BTC_JPY);
-        assert_eq!(to_string(&Symbol::EthJpy), ETH_JPY);
-        assert_eq!(to_string(&Symbol::BchJpy), BCH_JPY);
-        assert_eq!(to_string(&Symbol::LtcJpy), LTC_JPY);
-        assert_eq!(to_string(&Symbol::XprJpy), XRP_JPY);
+        assert_eq!(Symbol::Btc.to_string(), BTC);
+        assert_eq!(Symbol::Eth.to_string(), ETH);
+        assert_eq!(Symbol::BchJpy.to_string(), BCH_JPY);
     }
 }
