@@ -14,4 +14,5 @@ pub mod public;
 pub mod response;
 pub mod secret;
 pub mod symbol;
+pub mod time_in_force;
 pub mod timestamp;
