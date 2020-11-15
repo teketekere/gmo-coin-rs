@@ -170,6 +170,32 @@ pub struct Position {
     pub timestamp: DateTime<Utc>,
 }
 
+/// 建玉のサマリーを格納する構造体。
+#[derive(Deserialize)]
+pub struct Summary {
+    /// 平均建玉レート。
+    #[serde(deserialize_with = "id_to_str", rename = "averagePositionRate")]
+    pub average_position_rate: String,
+
+    /// 評価損益。
+    #[serde(deserialize_with = "str_to_i64", rename = "positionLossGain")]
+    pub position_loss_gain: i64,
+
+    /// 売買区分。"BUY" or "SELL"。
+    pub side: String,
+
+    /// 発注中数量。
+    #[serde(deserialize_with = "str_to_f64", rename = "sumOrderQuantity")]
+    pub sum_order_quantity: f64,
+
+    /// 建玉数量。
+    #[serde(deserialize_with = "str_to_f64", rename = "sumPositionQuantity")]
+    pub sum_position_quantity: f64,
+
+    /// 銘柄名。"BTC_JPY", "ETH_JPY", "BCH_JPY", "LTC_JPY", or "XPR_JPY"。
+    pub symbol: String,
+}
+
 /// 取得ページに関する情報(current_page, count)を格納する構造体。
 #[derive(Deserialize)]
 pub struct Pagination {

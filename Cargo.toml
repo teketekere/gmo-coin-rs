@@ -67,3 +67,7 @@ path = "examples/private/latest_executions.rs"
 [[example]]
 name = "open_positions"
 path = "examples/private/open_positions.rs"
+
+[[example]]
+name = "position_summary"
+path = "examples/private/position_summary.rs"

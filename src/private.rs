@@ -7,6 +7,7 @@ pub mod latest_executions;
 pub mod margin;
 pub mod open_positions;
 pub mod orders;
+pub mod position_summary;
 
 use crate::dto::{DEFAULT_COUNT, DEFAULT_PAGE};
 use crate::error::Error;
@@ -20,6 +21,7 @@ use crate::private::latest_executions::{request_latest_executions, LatestExecuti
 use crate::private::margin::{request_margin, Margin};
 use crate::private::open_positions::{request_open_positions, OpenPositions};
 use crate::private::orders::{request_orders, Orders};
+use crate::private::position_summary::{request_position_summary, PositionSummary};
 use crate::response::RestResponse;
 use crate::symbol::Symbol;
 
@@ -290,6 +292,25 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
             count,
         )
         .await?;
+        Ok(response)
+    }
+
+    /// 建玉サマリーAPIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    ///
+    pub async fn position_summary(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+    ) -> Result<RestResponse<PositionSummary>, Error> {
+        let response =
+            request_position_summary(&self.http_client, &api_key, &secret_key, &symbol).await?;
         Ok(response)
     }
 }
