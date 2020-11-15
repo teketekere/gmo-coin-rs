@@ -6,11 +6,13 @@ pub mod executions;
 pub mod latest_executions;
 pub mod margin;
 pub mod open_positions;
+pub mod order;
 pub mod orders;
 pub mod position_summary;
 
 use crate::dto::{DEFAULT_COUNT, DEFAULT_PAGE};
 use crate::error::Error;
+use crate::execution_type::ExecutionType;
 use crate::http_client::HttpClient;
 use crate::private::active_orders::{request_active_orders, ActiveOrders};
 use crate::private::assets::{request_assets, Assets};
@@ -20,10 +22,13 @@ use crate::private::executions::{
 use crate::private::latest_executions::{request_latest_executions, LatestExecutions};
 use crate::private::margin::{request_margin, Margin};
 use crate::private::open_positions::{request_open_positions, OpenPositions};
+use crate::private::order::{request_order, Order};
 use crate::private::orders::{request_orders, Orders};
 use crate::private::position_summary::{request_position_summary, PositionSummary};
 use crate::response::RestResponse;
+use crate::side::Side;
 use crate::symbol::Symbol;
+use crate::time_in_force::TimeInForce;
 
 /// Private API。
 pub struct PrivateAPI<T: HttpClient + std::marker::Sync + std::marker::Send> {
@@ -237,7 +242,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 建玉一覧APIをオプション引数付きで呼び出す。取得ページは1、取得件数は100(最大値)を指定したとする。
+    /// 建玉一覧APIを呼び出す。取得ページは1、取得件数は100(最大値)を指定したとする。
     ///
     /// # Arguments
     ///
@@ -311,6 +316,228 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<PositionSummary>, Error> {
         let response =
             request_position_summary(&self.http_client, &api_key, &secret_key, &symbol).await?;
+        Ok(response)
+    }
+
+    /// 新規成行注文APIを呼び出す。執行数量条件はFAK。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    ///
+    pub async fn market_order(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+    ) -> Result<RestResponse<Order>, Error> {
+        let response = request_order(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &ExecutionType::Market,
+            &symbol,
+            &side,
+            size,
+            &TimeInForce::Fak,
+            None,
+            None,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 新規成行注文APIをオプション引数付きで呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `time_in_force` - 執行数量条件。
+    ///
+    pub async fn market_order_with_options(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        time_in_force: &TimeInForce,
+    ) -> Result<RestResponse<Order>, Error> {
+        let response = request_order(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &ExecutionType::Market,
+            &symbol,
+            &side,
+            size,
+            &time_in_force,
+            None,
+            None,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 新規指値注文APIを呼び出す。執行数量条件はFAS、ロスカットレートは指定なし。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。
+    ///
+    pub async fn limit_order(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: i64,
+    ) -> Result<RestResponse<Order>, Error> {
+        let response = request_order(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &ExecutionType::Limit,
+            &symbol,
+            &side,
+            size,
+            &TimeInForce::Fas,
+            Some(price),
+            None,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 新規指値注文APIをオプション引数つきで呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。
+    /// * `time_in_force` - 執行数量条件。
+    /// * `losscut_price` - ロスカットレート。
+    ///
+    pub async fn limit_order_with_options(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: i64,
+        time_in_force: &TimeInForce,
+        losscut_price: i64,
+    ) -> Result<RestResponse<Order>, Error> {
+        let response = request_order(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &ExecutionType::Limit,
+            &symbol,
+            &side,
+            size,
+            &time_in_force,
+            Some(price),
+            Some(losscut_price),
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 新規指値注文APIを呼び出す。執行数量条件はFAK、ロスカットレートは指定なし。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。
+    ///
+    pub async fn stop_order(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: i64,
+    ) -> Result<RestResponse<Order>, Error> {
+        let response = request_order(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &ExecutionType::Stop,
+            &symbol,
+            &side,
+            size,
+            &TimeInForce::Fak,
+            Some(price),
+            None,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 新規指値注文APIをオプション引数つきで呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。
+    /// * `time_in_force` - 執行数量条件。
+    /// * `losscut_price` - ロスカットレート。
+    ///
+    pub async fn stop_order_with_options(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: i64,
+        time_in_force: &TimeInForce,
+        losscut_price: i64,
+    ) -> Result<RestResponse<Order>, Error> {
+        let response = request_order(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &ExecutionType::Stop,
+            &symbol,
+            &side,
+            size,
+            &time_in_force,
+            Some(price),
+            Some(losscut_price),
+        )
+        .await?;
         Ok(response)
     }
 }

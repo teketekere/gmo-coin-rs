@@ -71,3 +71,15 @@ path = "examples/private/open_positions.rs"
 [[example]]
 name = "position_summary"
 path = "examples/private/position_summary.rs"
+
+[[example]]
+name = "market_order"
+path = "examples/private/market_order.rs"
+
+[[example]]
+name = "limit_order"
+path = "examples/private/limit_order.rs"
+
+[[example]]
+name = "stop_order"
+path = "examples/private/stop_order.rs"
