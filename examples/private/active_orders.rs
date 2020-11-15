@@ -15,7 +15,7 @@ use gmo_coin_rs::symbol::Symbol;
 ///
 /// ```
 /// cargo build --examples
-/// cargo run --example orders
+/// cargo run --example active_orders
 /// ```
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -28,7 +28,7 @@ async fn main() -> Result<(), Error> {
         .active_orders(&api_key, &secret_key, &Symbol::Btc)
         .await?;
 
-    // 取得対象ページ、1ページ当たりの取得件数を取得する場合は次のようにします。
+    // 取得対象ページ、1ページ当たりの取得件数を指定する場合。
     // let page = 2;
     // let count = 30;
     // let response = private_api.active_orders_with_options(&api_key, &secret_key, &Symbol::Btc, page, count).await?;

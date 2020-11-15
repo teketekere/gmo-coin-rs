@@ -16,7 +16,7 @@ async fn main() -> Result<(), Error> {
     let public_api = PublicAPI::<Reqwest> { http_client };
     let response = public_api.trades(&Symbol::Btc).await?;
 
-    // 取得対象ページ、1ページ当たりの取得件数を取得する場合は次のようにする。
+    // 取得対象ページ、1ページ当たりの取得件数を指定する場合。
     // let page = 2;
     // let count = 30;
     // let response = public_api.trades_with_options(BTC, page, count).await?;

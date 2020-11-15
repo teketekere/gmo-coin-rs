@@ -28,7 +28,7 @@ async fn main() -> Result<(), Error> {
         .latest_executions(&api_key, &secret_key, &Symbol::BtcJpy)
         .await?;
 
-    // 取得対象ページ、1ページ当たりの取得件数を取得する場合。
+    // 取得対象ページ、1ページ当たりの取得件数を指定する場合。
     // let page = 2;
     // let count = 30;
     // let response = private_api.latest_executions_with_options(&api_key, &secret_key, &Symbol::Btc, page, count).await?;
