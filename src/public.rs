@@ -23,7 +23,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     ///
     pub async fn status(&self) -> Result<RestResponse<Status>, Error> {
         let response = request_status(&self.http_client).await?;
@@ -34,7 +33,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `symbol` - 銘柄
     ///
     pub async fn ticker(&self, symbol: &Symbol) -> Result<RestResponse<Ticker>, Error> {
@@ -46,7 +44,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `symbol` - 銘柄
     ///
     pub async fn orderbooks(&self, symbol: &Symbol) -> Result<RestResponse<Orderbooks>, Error> {
@@ -58,7 +55,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `symbol` - 銘柄
     ///
     pub async fn trades(&self, symbol: &Symbol) -> Result<RestResponse<Trades>, Error> {
@@ -70,7 +66,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `symbol` - 銘柄
     /// * `page` - 取得対象ページ
     /// * `count` - 取得件数
