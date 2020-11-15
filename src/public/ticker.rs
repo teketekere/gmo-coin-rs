@@ -65,49 +65,49 @@ pub struct Ticker {
 impl RestResponse<Ticker> {
     /// ASKを取得する。
     pub fn ask(&self) -> Result<i64, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(d.ask)
     }
 
     /// BIDを取得する。
     pub fn bid(&self) -> Result<i64, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(d.bid)
     }
 
     /// 高値を取得する。
     pub fn high(&self) -> Result<i64, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(d.high)
     }
 
     /// 終値を取得する。
     pub fn last(&self) -> Result<i64, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(d.last)
     }
 
     /// 安値を取得する。
     pub fn low(&self) -> Result<i64, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(d.low)
     }
 
     /// 銘柄名を取得する。
     pub fn symbol(&self) -> Result<&String, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(&d.symbol)
     }
 
     /// 時刻を取得する。
     pub fn timestamp(&self) -> Result<&DateTime<Utc>, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(&d.timestamp)
     }
 
     /// 取引量を取得する。
     pub fn volume(&self) -> Result<f64, Error> {
-        let d = self.body.data.get(0).ok_or(Error::DeserializeError {})?;
+        let d = self.body.data.get(0).ok_or(Error::EmptyResponseError {})?;
         Ok(d.volume)
     }
 }
