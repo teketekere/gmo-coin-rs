@@ -7,18 +7,15 @@ pub mod latest_executions;
 pub mod margin;
 pub mod orders;
 
+use crate::dto::{DEFAULT_COUNT, DEFAULT_PAGE};
 use crate::error::Error;
 use crate::http_client::HttpClient;
-use crate::private::active_orders::{
-    request_active_orders, request_active_orders_with_options, ActiveOrders,
-};
+use crate::private::active_orders::{request_active_orders, ActiveOrders};
 use crate::private::assets::{request_assets, Assets};
 use crate::private::executions::{
     request_executions_with_execution_id, request_executions_with_order_id, Executions,
 };
-use crate::private::latest_executions::{
-    request_latest_executions, request_latest_executions_with_options, LatestExecutions,
-};
+use crate::private::latest_executions::{request_latest_executions, LatestExecutions};
 use crate::private::margin::{request_margin, Margin};
 use crate::private::orders::{request_orders, Orders};
 use crate::response::RestResponse;
@@ -80,7 +77,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 有効注文一覧APIを呼び出す。
+    /// 有効注文一覧APIを呼び出す。取得ページは1、取得件数は100(最大値)を指定したとする。
     ///
     /// # Arguments
     ///
@@ -94,8 +91,15 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         secret_key: &str,
         symbol: &Symbol,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
-        let response =
-            request_active_orders(&self.http_client, &api_key, &secret_key, &symbol).await?;
+        let response = request_active_orders(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &symbol,
+            DEFAULT_PAGE,
+            DEFAULT_COUNT,
+        )
+        .await?;
         Ok(response)
     }
 
@@ -117,7 +121,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
-        let response = request_active_orders_with_options(
+        let response = request_active_orders(
             &self.http_client,
             &api_key,
             &secret_key,
@@ -173,7 +177,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 最新の約定一覧APIを呼び出す。
+    /// 最新の約定一覧APIを呼び出す。取得ページは1、取得件数は100(最大値)を指定したとする。
     ///
     /// # Arguments
     ///
@@ -187,8 +191,15 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         secret_key: &str,
         symbol: &Symbol,
     ) -> Result<RestResponse<LatestExecutions>, Error> {
-        let response =
-            request_latest_executions(&self.http_client, &api_key, &secret_key, &symbol).await?;
+        let response = request_latest_executions(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &symbol,
+            DEFAULT_PAGE,
+            DEFAULT_COUNT,
+        )
+        .await?;
         Ok(response)
     }
 
@@ -210,7 +221,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<LatestExecutions>, Error> {
-        let response = request_latest_executions_with_options(
+        let response = request_latest_executions(
             &self.http_client,
             &api_key,
             &secret_key,

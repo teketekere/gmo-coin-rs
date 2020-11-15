@@ -58,8 +58,8 @@ impl RestResponse<LatestExecutions> {
     }
 }
 
-/// 最新の約定一覧APIを呼び出す。オプショナルなパラメーターを明示的に指定する場合こちらを呼ぶ。
-pub async fn request_latest_executions_with_options(
+/// 最新の約定一覧APIを呼び出す。
+pub async fn request_latest_executions(
     http_client: &impl HttpClient,
     api_key: &str,
     secret_key: &str,
@@ -83,17 +83,6 @@ pub async fn request_latest_executions_with_options(
     );
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<LatestExecutions>(&response)
-}
-
-/// 最新の約定一覧APIを呼び出す。
-pub async fn request_latest_executions(
-    http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
-    symbol: &Symbol,
-) -> Result<RestResponse<LatestExecutions>, Error> {
-    request_latest_executions_with_options(http_client, &api_key, &secret_key, &symbol, 1, 100)
-        .await
 }
 
 #[cfg(test)]
@@ -138,9 +127,10 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_latest_executions(&http_client, "apikey", "seckey", &Symbol::Btc)
-            .await
-            .unwrap();
+        let resp =
+            request_latest_executions(&http_client, "apikey", "seckey", &Symbol::Btc, 1, 100)
+                .await
+                .unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

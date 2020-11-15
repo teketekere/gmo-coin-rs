@@ -137,3 +137,9 @@ pub struct Pagination {
     #[serde(deserialize_with = "str_to_i64")]
     pub count: i64,
 }
+
+/// 取得対象ページのデフォルト値。APIを呼び出すとき、数値が指定されない場合はこの値を用いる。
+pub const DEFAULT_PAGE: i32 = 1;
+
+/// 1ページ当たりの取得件数のデフォルト値。APIを呼び出すとき、数値が指定されない場合はこの値を用いる。
+pub const DEFAULT_COUNT: i32 = 100;

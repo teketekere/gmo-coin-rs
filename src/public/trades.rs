@@ -55,8 +55,8 @@ impl RestResponse<Trades> {
     }
 }
 
-/// 取引履歴APIを呼び出す。引数で取得対象ページと1ページ当たりの取得件数を指定する。
-pub async fn request_trades_with_options(
+/// 取引履歴APIを呼び出す。
+pub async fn request_trades(
     http_client: &impl HttpClient,
     symbol: &Symbol,
     page: i32,
@@ -73,14 +73,6 @@ pub async fn request_trades_with_options(
     let headers = Headers::create_empty_headers();
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Trades>(&response)
-}
-
-/// 取引履歴APIを呼び出す。
-pub async fn request_trades(
-    http_client: &impl HttpClient,
-    symbol: &Symbol,
-) -> Result<RestResponse<Trades>, Error> {
-    request_trades_with_options(http_client, &symbol, 1, 100).await
 }
 
 #[cfg(test)]
@@ -125,7 +117,9 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_trades(&http_client, &Symbol::Btc).await.unwrap();
+        let resp = request_trades(&http_client, &Symbol::Btc, 1, 100)
+            .await
+            .unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

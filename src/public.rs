@@ -5,12 +5,13 @@ pub mod status;
 pub mod ticker;
 pub mod trades;
 
+use crate::dto::{DEFAULT_COUNT, DEFAULT_PAGE};
 use crate::error::Error;
 use crate::http_client::HttpClient;
 use crate::public::orderbooks::{request_orderbooks, Orderbooks};
 use crate::public::status::{request_status, Status};
 use crate::public::ticker::{request_ticker, Ticker};
-use crate::public::trades::{request_trades, request_trades_with_options, Trades};
+use crate::public::trades::{request_trades, Trades};
 use crate::response::RestResponse;
 use crate::symbol::Symbol;
 
@@ -51,18 +52,19 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
         Ok(response)
     }
 
-    /// 取引履歴APIを呼び出す。取得ページは1、取得件数は100(最大値)となる。
+    /// 取引履歴APIを呼び出す。取得ページは1、取得件数は100(最大値)を指定したとする。
     ///
     /// # Arguments
     ///
     /// * `symbol` - 銘柄
     ///
     pub async fn trades(&self, symbol: &Symbol) -> Result<RestResponse<Trades>, Error> {
-        let response = request_trades(&self.http_client, &symbol).await?;
+        let response =
+            request_trades(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
         Ok(response)
     }
 
-    /// 取引履歴APIを呼び出す。引数で取得対象ページと1ページ当たりの取得件数を指定する。
+    /// 取引履歴APIをオプション引数付きで呼び出す。
     ///
     /// # Arguments
     ///
@@ -76,7 +78,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<Trades>, Error> {
-        let response = request_trades_with_options(&self.http_client, &symbol, page, count).await?;
+        let response = request_trades(&self.http_client, &symbol, page, count).await?;
         Ok(response)
     }
 }
