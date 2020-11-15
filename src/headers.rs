@@ -2,6 +2,7 @@
 
 use crate::secret::*;
 use crate::timestamp::get_timestamp;
+use serde_json::Value;
 use std::collections::{hash_map::Iter, HashMap};
 
 pub struct Headers(HashMap<String, String>);
@@ -24,17 +25,31 @@ impl Headers {
     }
 
     /// GETリクエスト時のヘッダーを作る。
-    pub fn create_get_headers(
-        api_key: &str,
-        secret_key: &str,
-        method: &str,
-        path: &str,
-    ) -> Headers {
+    pub fn create_get_headers(api_key: &str, secret_key: &str, path: &str) -> Headers {
         let timestamp = get_timestamp();
-        let text = format!("{}{}{}", timestamp, method, path);
+        let text = format!("{}{}{}", timestamp, "GET", path);
         let secret = Secret::create(&api_key, &secret_key, &text);
 
         let mut headers: HashMap<String, String> = HashMap::new();
+        headers.insert(String::from("API-KEY"), secret.api_key.clone());
+        headers.insert(String::from("API-TIMESTAMP"), timestamp.to_string());
+        headers.insert(String::from("API-SIGN"), secret.sign);
+        Headers(headers)
+    }
+
+    /// POSTリクエスト時のヘッダーを作る。
+    pub fn create_post_headers(
+        api_key: &str,
+        secret_key: &str,
+        path: &str,
+        parameters: &Value,
+    ) -> Headers {
+        let timestamp = get_timestamp();
+        let text = format!("{}{}{}{}", timestamp, "POST", path, &parameters);
+        let secret = Secret::create(&api_key, &secret_key, &text);
+
+        let mut headers: HashMap<String, String> = HashMap::new();
+        headers.insert(String::from("content-type"), "application/json".to_string());
         headers.insert(String::from("API-KEY"), secret.api_key.clone());
         headers.insert(String::from("API-TIMESTAMP"), timestamp.to_string());
         headers.insert(String::from("API-SIGN"), secret.sign);
