@@ -24,7 +24,7 @@ async fn main() -> Result<(), Error> {
     let private_api = PrivateAPI::<Reqwest> { http_client };
     let response = private_api.margin(&api_key, &secret_key).await?;
 
-    println!("時価評価総額: {}", response.actual_profitloss());
+    println!("時価評価総額: {}", response.actual_profit_loss());
     println!("取引余力: {}", response.availabel_amount());
     println!("拘束証拠金: {}", response.margin());
     println!("評価損益: {}", response.profit_loss());

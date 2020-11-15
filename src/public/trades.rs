@@ -45,8 +45,8 @@ impl RestResponse<Trades> {
     }
 
     /// 取得対象ページ。
-    pub fn page(&self) -> i64 {
-        self.body.data.pagination.currentPage
+    pub fn current_page(&self) -> i64 {
+        self.body.data.pagination.current_page
     }
 
     /// 1ページ当たりの取得件数。
@@ -129,7 +129,7 @@ mod tests {
             "2019-03-28T09:28:07.980Z"
         );
         assert_eq!(resp.count(), 30);
-        assert_eq!(resp.page(), 1);
+        assert_eq!(resp.current_page(), 1);
         let trades = resp.trades();
         assert_eq!(trades.len(), 2);
     }

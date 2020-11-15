@@ -48,8 +48,8 @@ impl RestResponse<ActiveOrders> {
     }
 
     /// 取得対象ページ。
-    pub fn page(&self) -> i64 {
-        self.body.data.pagination.currentPage
+    pub fn current_page(&self) -> i64 {
+        self.body.data.pagination.current_page
     }
 
     /// 1ページ当たりの取得件数。
@@ -143,7 +143,7 @@ mod tests {
             "2019-03-19T01:07:24.217Z"
         );
         assert_eq!(resp.active_orders().len(), 1);
-        assert_eq!(resp.page(), 1);
+        assert_eq!(resp.current_page(), 1);
         assert_eq!(resp.count(), 30);
     }
 }

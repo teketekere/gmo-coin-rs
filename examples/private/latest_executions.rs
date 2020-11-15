@@ -33,18 +33,18 @@ async fn main() -> Result<(), Error> {
     // let count = 30;
     // let response = private_api.latest_executions_with_options(&api_key, &secret_key, &Symbol::Btc, page, count).await?;
 
-    println!("取得対象ページ: {}", response.page());
+    println!("取得対象ページ: {}", response.current_page());
     println!("取得件数: {}\n", response.count());
 
     for execution in response.latest_executions() {
-        println!("約定ID: {}", execution.executionId);
-        println!("注文ID: {}", execution.orderId);
+        println!("約定ID: {}", execution.execution_id);
+        println!("注文ID: {}", execution.order_id);
         println!("銘柄名: {}", execution.symbol);
         println!("売買区分: {}", execution.side);
-        println!("決済区分: {}", execution.settleType);
+        println!("決済区分: {}", execution.settle_type);
         println!("約定数量: {}", execution.size);
         println!("約定レート: {}", execution.price);
-        println!("決済損益 : {}", execution.lossGain);
+        println!("決済損益 : {}", execution.loss_gain);
         println!("取引手数料 : {}", execution.fee);
         println!("約定日時 : {}\n", execution.timestamp);
     }

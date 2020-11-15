@@ -21,7 +21,7 @@ async fn main() -> Result<(), Error> {
     // let count = 30;
     // let response = public_api.trades_with_options(BTC, page, count).await?;
 
-    println!("取得対象ページ: {}", response.page());
+    println!("取得対象ページ: {}", response.current_page());
     println!("取得件数: {}\n", response.count());
 
     let trades = response.trades();

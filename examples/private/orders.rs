@@ -31,20 +31,20 @@ async fn main() -> Result<(), Error> {
         .await?;
 
     for order in response.orders() {
-        println!("親注文ID: {}", order.rootOrderId);
-        println!("注文ID: {}", order.orderId);
+        println!("親注文ID: {}", order.root_order_id);
+        println!("注文ID: {}", order.order_id);
         println!("銘柄名: {}", order.symbol);
         println!("売買区分: {}", order.side);
-        println!("取引区分: {}", order.orderType);
-        println!("注文タイプ: {}", order.executionType);
-        println!("決済区分: {}", order.settleType);
+        println!("取引区分: {}", order.order_type);
+        println!("注文タイプ: {}", order.execution_type);
+        println!("決済区分: {}", order.settle_type);
         println!("発注数量: {}", order.size);
-        println!("約定数量: {}", order.executedSize);
+        println!("約定数量: {}", order.executed_size);
         println!("注文価格: {}", order.price);
-        println!("ロスカットレート : {}", order.losscutPrice);
+        println!("ロスカットレート : {}", order.losscut_price);
         println!("注文ステータス : {}", order.status);
-        println!("取消区分 : {}", order.cancelType);
-        println!("執行数量条件 : {}", order.timeInForce);
+        println!("取消区分 : {}", order.cancel_type);
+        println!("執行数量条件 : {}", order.time_in_force);
         println!("注文日時 : {}\n", order.timestamp);
     }
 

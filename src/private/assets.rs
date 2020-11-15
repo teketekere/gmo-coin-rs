@@ -17,7 +17,6 @@ const ASSETS_API_METHOD: &str = "GET";
 
 /// 資産残高APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
-#[allow(non_snake_case)]
 pub struct Data {
     /// 残高。
     #[serde(deserialize_with = "str_to_f64")]
@@ -28,8 +27,8 @@ pub struct Data {
     pub available: f64,
 
     /// 円転レート。
-    #[serde(deserialize_with = "str_to_f64")]
-    pub conversionRate: f64,
+    #[serde(deserialize_with = "str_to_f64", rename = "conversionRate")]
+    pub conversion_rate: f64,
 
     /// 銘柄名。
     pub symbol: String,
@@ -38,12 +37,12 @@ pub struct Data {
 impl Data {
     /// 残高を円で取得する。
     pub fn amount_as_jpy(&self) -> f64 {
-        self.amount * self.conversionRate
+        self.amount * self.conversion_rate
     }
 
     /// 利用可能金額を円で取得する。
     pub fn available_as_jpy(&self) -> f64 {
-        self.available * self.conversionRate
+        self.available * self.conversion_rate
     }
 }
 

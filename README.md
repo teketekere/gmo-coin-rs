@@ -26,7 +26,7 @@ Rust 製の GMOCoin API のクライアントライブラリです。
 
 - 特定の条件下でのみ返ってくるプロパティ
 
-例えば、注文情報取得 API では取り消し区分(`cancelType`)プロパティは注文ステータス(`status`)が`CANCELLING`, `CANCELED`, `EXPIRED`の場合のみ
+例えば、注文情報取得 API では取り消し区分(`cancel_type`)プロパティは注文ステータス(`status`)が`CANCELLING`, `CANCELED`, `EXPIRED`の場合のみ
 返されます。
 
 このライブラリではプロパティがない場合は`NONE`という値を文字列で持つようにしています。
