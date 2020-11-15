@@ -21,12 +21,14 @@ pub const FAS: &str = "FAS";
 pub const FOK: &str = "FOK";
 pub const SOK: &str = "SOK";
 
-/// 執行数量条件を文字列にする。
-pub fn tif_to_string(tif: &TimeInForce) -> &str {
-    match tif {
-        TimeInForce::Fak => FAK,
-        TimeInForce::Fas => FAS,
-        TimeInForce::Fok => FOK,
-        TimeInForce::Sok => SOK,
+impl TimeInForce {
+    /// 執行数量条件を文字列にする。
+    pub fn tif_to_string(&self) -> &str {
+        match self {
+            TimeInForce::Fak => FAK,
+            TimeInForce::Fas => FAS,
+            TimeInForce::Fok => FOK,
+            TimeInForce::Sok => SOK,
+        }
     }
 }
