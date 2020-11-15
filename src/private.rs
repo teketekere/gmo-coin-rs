@@ -71,7 +71,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     ///
     pub async fn active_orders(
         &self,
@@ -86,7 +86,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
@@ -133,7 +133,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     ///
     pub async fn latest_executions(
         &self,
@@ -149,7 +149,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
@@ -167,7 +167,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
@@ -184,7 +184,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
@@ -202,7 +202,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     ///
     pub async fn position_summary(
         &self,
@@ -216,7 +216,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
     ///
@@ -244,7 +244,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
     /// * `time_in_force` - 執行数量条件。
@@ -274,7 +274,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
     /// * `price` - 注文価格。
@@ -304,7 +304,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
     /// * `price` - 注文価格。
@@ -334,11 +334,11 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 新規指値注文APIを呼び出す。執行数量条件はFAK、ロスカットレートは指定なし。
+    /// 新規逆指値注文APIを呼び出す。執行数量条件はFAK、ロスカットレートは指定なし。
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
     /// * `price` - 注文価格。
@@ -364,11 +364,11 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 新規指値注文APIをオプション引数つきで呼び出す。
+    /// 新規逆指値注文APIをオプション引数つきで呼び出す。
     ///
     /// # Arguments
     ///
-    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
     /// * `price` - 注文価格。
