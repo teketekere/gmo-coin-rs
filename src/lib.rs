@@ -5,6 +5,7 @@
 pub mod dto;
 pub mod end_point;
 pub mod error;
+pub mod execution_type;
 pub mod headers;
 pub mod http_client;
 pub mod json;
