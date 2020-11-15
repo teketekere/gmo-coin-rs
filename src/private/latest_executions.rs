@@ -14,9 +14,6 @@ use serde::Deserialize;
 /// 最新の約定一覧APIのパス。
 const LATEST_EXECUTIONS_API_PATH: &str = "/v1/latestExecutions";
 
-/// 最新の約定一覧APIを呼び出すときのメソッド。
-const LATEST_EXECUTIONS_API_METHOD: &str = "GET";
-
 /// 最新の約定一覧APIから返ってくるレスポンスのうち`list`の部分を格納数する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -77,12 +74,7 @@ pub async fn request_latest_executions(
         page,
         count
     );
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &LATEST_EXECUTIONS_API_METHOD,
-        &LATEST_EXECUTIONS_API_PATH,
-    );
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &LATEST_EXECUTIONS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<LatestExecutions>(&response)
 }

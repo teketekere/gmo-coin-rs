@@ -13,9 +13,6 @@ use serde::Deserialize;
 /// 注文情報取得APIのパス。
 const ORDERS_API_PATH: &str = "/v1/orders";
 
-/// 注文情報取得APIを呼び出すときのメソッド。
-const ORDERS_API_METHOD: &str = "GET";
-
 /// 注文情報取得APIから返ってくるレスポンスのうち`list`の部分を格納数する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -58,8 +55,7 @@ pub async fn request_orders(
         ORDERS_API_PATH,
         order_ids.join(",")
     );
-    let headers =
-        Headers::create_get_headers(&api_key, &secret_key, &ORDERS_API_METHOD, &ORDERS_API_PATH);
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &ORDERS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Orders>(&response)
 }

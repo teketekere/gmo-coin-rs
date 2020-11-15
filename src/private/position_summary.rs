@@ -14,9 +14,6 @@ use serde::Deserialize;
 /// 建玉サマリーAPIのパス。
 const POSITION_SUMMARY_API_PATH: &str = "/v1/positionSummary";
 
-/// 建玉サマリーAPIを呼び出すときのメソッド。
-const POSITION_SUMMARY_API_METHOD: &str = "GET";
-
 /// 建玉サマリーAPIから返ってくるレスポンスのうち`list`の部分を格納数する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -59,12 +56,7 @@ pub async fn request_position_summary(
         POSITION_SUMMARY_API_PATH,
         symbol.to_string(),
     );
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &POSITION_SUMMARY_API_METHOD,
-        &POSITION_SUMMARY_API_PATH,
-    );
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &POSITION_SUMMARY_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<PositionSummary>(&response)
 }

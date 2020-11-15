@@ -13,9 +13,6 @@ use serde::Deserialize;
 /// 資産残高APIのパス。
 const ASSETS_API_PATH: &str = "/v1/account/assets";
 
-/// 資産残高APIを呼び出すときのメソッド。
-const ASSETS_API_METHOD: &str = "GET";
-
 /// 資産残高APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -76,8 +73,7 @@ pub async fn request_assets(
     secret_key: &str,
 ) -> Result<RestResponse<Assets>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, ASSETS_API_PATH,);
-    let headers =
-        Headers::create_get_headers(&api_key, &secret_key, &ASSETS_API_METHOD, &ASSETS_API_PATH);
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &ASSETS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Assets>(&response)
 }

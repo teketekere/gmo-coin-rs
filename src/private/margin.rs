@@ -12,9 +12,6 @@ use serde::Deserialize;
 /// 余力APIのパス。
 const MARGIN_API_PATH: &str = "/v1/account/margin";
 
-/// 余力APIを呼び出すときのメソッド。
-const MARGIN_API_METHOD: &str = "GET";
-
 /// 余力APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -78,8 +75,7 @@ pub async fn request_margin(
     secret_key: &str,
 ) -> Result<RestResponse<Margin>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, MARGIN_API_PATH,);
-    let headers =
-        Headers::create_get_headers(&api_key, &secret_key, &MARGIN_API_METHOD, &MARGIN_API_PATH);
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &MARGIN_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Margin>(&response)
 }

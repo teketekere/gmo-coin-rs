@@ -14,9 +14,6 @@ use serde::Deserialize;
 /// 建玉一覧APIのパス。
 const OPEN_POSITIONS_API_PATH: &str = "/v1/openPositions";
 
-/// 建玉一覧APIを呼び出すときのメソッド。
-const OPEN_POSITIONS_API_METHOD: &str = "GET";
-
 /// 建玉一覧APIから返ってくるレスポンスのうち`list`の部分を格納数する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -77,12 +74,7 @@ pub async fn request_open_positions(
         page,
         count,
     );
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &OPEN_POSITIONS_API_METHOD,
-        &OPEN_POSITIONS_API_PATH,
-    );
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &OPEN_POSITIONS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<OpenPositions>(&response)
 }

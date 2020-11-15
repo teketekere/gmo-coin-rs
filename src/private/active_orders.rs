@@ -14,9 +14,6 @@ use serde::Deserialize;
 /// 有効注文一覧APIのパス。
 const ACTIVE_ORDERS_API_PATH: &str = "/v1/activeOrders";
 
-/// 有効注文一覧APIを呼び出すときのメソッド。
-const ACTIVE_ORDERS_API_METHOD: &str = "GET";
-
 /// 有効注文一覧APIから返ってくるレスポンスのうち`list`の部分を格納数する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -77,12 +74,7 @@ pub async fn request_active_orders(
         page,
         count,
     );
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &ACTIVE_ORDERS_API_METHOD,
-        &ACTIVE_ORDERS_API_PATH,
-    );
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &ACTIVE_ORDERS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<ActiveOrders>(&response)
 }

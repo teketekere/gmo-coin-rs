@@ -13,9 +13,6 @@ use serde::Deserialize;
 /// 約定情報取得APIのパス。
 const EXECUTIONS_API_PATH: &str = "/v1/executions";
 
-/// 約定情報取得APIを呼び出すときのメソッド。
-const EXECUTION_API_METHOD: &str = "GET";
-
 /// 約定情報取得APIから返ってくるレスポンスのうち`list`の部分を格納数する構造体。
 #[derive(Deserialize)]
 pub struct Data {
@@ -56,12 +53,7 @@ pub async fn request_executions_with_order_id(
         "{}{}?orderId={}",
         PRIVATE_ENDPOINT, EXECUTIONS_API_PATH, order_id,
     );
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &EXECUTION_API_METHOD,
-        &EXECUTIONS_API_PATH,
-    );
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &EXECUTIONS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Executions>(&response)
 }
@@ -77,12 +69,7 @@ pub async fn request_executions_with_execution_id(
         "{}{}?executionId={}",
         PRIVATE_ENDPOINT, EXECUTIONS_API_PATH, execution_id,
     );
-    let headers = Headers::create_get_headers(
-        &api_key,
-        &secret_key,
-        &EXECUTION_API_METHOD,
-        &EXECUTIONS_API_PATH,
-    );
+    let headers = Headers::create_get_headers(&api_key, &secret_key, &EXECUTIONS_API_PATH);
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Executions>(&response)
 }
