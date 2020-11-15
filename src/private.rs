@@ -5,6 +5,7 @@ pub mod assets;
 pub mod executions;
 pub mod latest_executions;
 pub mod margin;
+pub mod open_positions;
 pub mod orders;
 
 use crate::dto::{DEFAULT_COUNT, DEFAULT_PAGE};
@@ -17,6 +18,7 @@ use crate::private::executions::{
 };
 use crate::private::latest_executions::{request_latest_executions, LatestExecutions};
 use crate::private::margin::{request_margin, Margin};
+use crate::private::open_positions::{request_open_positions, OpenPositions};
 use crate::private::orders::{request_orders, Orders};
 use crate::response::RestResponse;
 use crate::symbol::Symbol;
@@ -222,6 +224,64 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         count: i32,
     ) -> Result<RestResponse<LatestExecutions>, Error> {
         let response = request_latest_executions(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &symbol,
+            page,
+            count,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 建玉一覧APIをオプション引数付きで呼び出す。取得ページは1、取得件数は100(最大値)を指定したとする。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `page` - 取得対象ページ。
+    /// * `count` - 1ページ当たりの取得件数。
+    ///
+    pub async fn open_positions(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+    ) -> Result<RestResponse<OpenPositions>, Error> {
+        let response = request_open_positions(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &symbol,
+            DEFAULT_PAGE,
+            DEFAULT_COUNT,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 建玉一覧APIをオプション引数付きで呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `symbol` - 有効注文を取得する銘柄。
+    /// * `page` - 取得対象ページ。
+    /// * `count` - 1ページ当たりの取得件数。
+    ///
+    pub async fn open_positions_with_options(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        symbol: &Symbol,
+        page: i32,
+        count: i32,
+    ) -> Result<RestResponse<OpenPositions>, Error> {
+        let response = request_open_positions(
             &self.http_client,
             &api_key,
             &secret_key,

@@ -128,6 +128,48 @@ pub struct Execution {
     pub timestamp: DateTime<Utc>,
 }
 
+/// 建玉情報を格納する構造体。
+#[derive(Deserialize)]
+pub struct Position {
+    /// 建玉ID。
+    #[serde(deserialize_with = "id_to_str", rename = "positionId")]
+    pub position_id: String,
+
+    /// 銘柄名。
+    pub symbol: String,
+
+    /// 売買区分。"BUY" or "SELL"。
+    pub side: String,
+
+    /// 建玉数量。
+    #[serde(deserialize_with = "str_to_f64")]
+    pub size: f64,
+
+    /// 発注中数量。
+    #[serde(deserialize_with = "str_to_f64", rename = "orderdSize")]
+    pub orderd_size: f64,
+
+    /// 建玉レート。
+    #[serde(deserialize_with = "str_to_i64")]
+    pub price: i64,
+
+    /// 評価損益。
+    #[serde(deserialize_with = "str_to_i64", rename = "lossGain")]
+    pub loss_gain: i64,
+
+    /// レバレッジ。
+    #[serde(deserialize_with = "str_to_f64")]
+    pub leverage: f64,
+
+    /// ロスカットレート。
+    #[serde(deserialize_with = "str_to_f64", rename = "losscutPrice")]
+    pub losscut_price: f64,
+
+    /// 注文日時。
+    #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
+    pub timestamp: DateTime<Utc>,
+}
+
 /// 取得ページに関する情報(current_page, count)を格納する構造体。
 #[derive(Deserialize)]
 pub struct Pagination {
