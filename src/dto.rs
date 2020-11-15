@@ -10,11 +10,11 @@ use serde::Deserialize;
 #[allow(non_snake_case)]
 pub struct Order {
     /// 親注文ID。
-    #[serde(deserialize_with = "orderid_to_str")]
+    #[serde(deserialize_with = "id_to_str")]
     pub rootOrderId: String,
 
     /// 注文ID。
-    #[serde(deserialize_with = "orderid_to_str")]
+    #[serde(deserialize_with = "id_to_str")]
     pub orderId: String,
 
     /// 銘柄名。
@@ -79,6 +79,48 @@ pub struct Trade {
     pub size: f64,
 
     /// 約定日時。
+    #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
+    pub timestamp: DateTime<Utc>,
+}
+
+/// 約定情報を格納する構造体。
+#[derive(Deserialize)]
+#[allow(non_snake_case)]
+pub struct Execution {
+    /// 約定ID。
+    #[serde(deserialize_with = "id_to_str")]
+    pub executionId: String,
+
+    /// 注文ID。
+    #[serde(deserialize_with = "id_to_str")]
+    pub orderId: String,
+
+    /// 銘柄名。
+    pub symbol: String,
+
+    /// 売買区分。"BUY" or "SELL"。
+    pub side: String,
+
+    /// 決済区分。"OPEN" or "CLOSE"。
+    pub settleType: String,
+
+    /// 約定数量。
+    #[serde(deserialize_with = "str_to_f64")]
+    pub size: f64,
+
+    /// 約定レート。
+    #[serde(deserialize_with = "str_to_i64")]
+    pub price: i64,
+
+    /// 決済損益。
+    #[serde(deserialize_with = "str_to_i64")]
+    pub lossGain: i64,
+
+    /// 取引手数料。
+    #[serde(deserialize_with = "str_to_i64")]
+    pub fee: i64,
+
+    /// 注文日時。
     #[serde(deserialize_with = "gmo_timestamp_to_chrono_timestamp")]
     pub timestamp: DateTime<Utc>,
 }

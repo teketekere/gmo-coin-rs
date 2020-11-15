@@ -55,3 +55,7 @@ path = "examples/private/orders.rs"
 [[example]]
 name = "active_orders"
 path = "examples/private/active_orders.rs"
+
+[[example]]
+name = "executions"
+path = "examples/private/executions.rs"

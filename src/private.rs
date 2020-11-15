@@ -2,6 +2,7 @@
 
 pub mod active_orders;
 pub mod assets;
+pub mod executions;
 pub mod margin;
 pub mod orders;
 
@@ -11,6 +12,9 @@ use crate::private::active_orders::{
     get_active_orders, get_active_orders_with_options, ActiveOrders,
 };
 use crate::private::assets::{get_assets, Assets};
+use crate::private::executions::{
+    request_executions_with_execution_id, request_executions_with_order_id, Executions,
+};
 use crate::private::margin::{get_margin, Margin};
 use crate::private::orders::{get_orders, Orders};
 use crate::response::RestResponse;
@@ -26,7 +30,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `api_key` - GMOコインのAPIキー。
     /// * `secret_key` - GMOコインのAPIシークレット。
     ///
@@ -43,7 +46,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `api_key` - GMOコインのAPIキー。
     /// * `secret_key` - GMOコインのAPIシークレット。
     ///
@@ -60,7 +62,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `api_key` - GMOコインのAPIキー。
     /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `order_ids` - 取得する注文の注文ID。最大10件まで指定できる。
@@ -79,7 +80,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `api_key` - GMOコインのAPIキー。
     /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
@@ -98,7 +98,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `http_client` - Http client
     /// * `api_key` - GMOコインのAPIキー。
     /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
@@ -120,6 +119,50 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
             &symbol,
             page,
             count,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 約定情報取得APIを呼び出す。指定した注文IDの約定情報が取得できる。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `order_id` - 注文ID。
+    ///
+    pub async fn executions_with_order_id(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        order_id: &str,
+    ) -> Result<RestResponse<Executions>, Error> {
+        let response =
+            request_executions_with_order_id(&self.http_client, &api_key, &secret_key, &order_id)
+                .await?;
+        Ok(response)
+    }
+
+    /// 約定情報取得APIを呼び出す。指定した約定IDの約定情報が取得できる。
+    ///
+    /// # Arguments
+    ///
+    /// * `api_key` - GMOコインのAPIキー。
+    /// * `secret_key` - GMOコインのAPIシークレット。
+    /// * `execution_id` - 約定ID。
+    ///
+    pub async fn executions_with_execution_id(
+        &self,
+        api_key: &str,
+        secret_key: &str,
+        execution_id: &str,
+    ) -> Result<RestResponse<Executions>, Error> {
+        let response = request_executions_with_execution_id(
+            &self.http_client,
+            &api_key,
+            &secret_key,
+            &execution_id,
         )
         .await?;
         Ok(response)
