@@ -29,7 +29,10 @@ jobs:
         with:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-
+      - name: Set fake api key
+        run: |
+          echo " GMO_COIN_API_KEY=\"fake\" " >> $GMO_COIN_API_KEY
+          echo " GMO_COIN_API_SECRET=\"fake\" " >> $GMO_COIN_API_SECRET
       - name: Build
         run: cargo build --verbose --all-targets
       - name: Run tests
