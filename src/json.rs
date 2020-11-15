@@ -30,10 +30,10 @@ pub fn str_to_i64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::
     })
 }
 
-/// 注文Idを文字列に変換する。
-/// GMOコインのお知らせを見ると注文Idは2020年11月4日から文字列になると書いてあるが、2020年11月14日現在数値で返ってくる。
+/// Id(注文Idや約定Id)を文字列に変換する。
+/// GMOコインのお知らせを見るとIdは2020年11月4日から文字列になると書いてあるが、2020年11月14日現在数値で返ってくる。
 /// 将来的に文字列に変更されてもいいように、数値でも文字列でも文字列に直すようにしておく。
-pub fn orderid_to_str<'de, D: Deserializer<'de>>(deserializer: D) -> Result<String, D::Error> {
+pub fn id_to_str<'de, D: Deserializer<'de>>(deserializer: D) -> Result<String, D::Error> {
     Ok(match Value::deserialize(deserializer)? {
         Value::String(s) => s,
         Value::Number(num) => num.to_string(),
