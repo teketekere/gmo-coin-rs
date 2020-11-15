@@ -60,8 +60,6 @@ impl RestResponse<OpenPositions> {
 /// 建玉一覧APIを呼び出す。
 pub async fn request_open_positions(
     http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
     symbol: &Symbol,
     page: i32,
     count: i32,
@@ -74,7 +72,7 @@ pub async fn request_open_positions(
         page,
         count,
     );
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &OPEN_POSITIONS_API_PATH);
+    let headers = Headers::create_get_headers(&OPEN_POSITIONS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<OpenPositions>(&response)
 }
@@ -129,7 +127,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_open_positions(&http_client, "apikey", "seckey", &Symbol::Bch, 1, 100)
+        let resp = request_open_positions(&http_client, &Symbol::Bch, 1, 100)
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);
@@ -153,10 +151,9 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp =
-            request_open_positions(&http_client, "apikey", "seckey", &Symbol::BtcJpy, 1, 100)
-                .await
-                .unwrap();
+        let resp = request_open_positions(&http_client, &Symbol::BtcJpy, 1, 100)
+            .await
+            .unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

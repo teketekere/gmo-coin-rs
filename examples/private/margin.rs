@@ -2,11 +2,11 @@ use gmo_coin_rs::error::Error;
 use gmo_coin_rs::http_client::Reqwest;
 use gmo_coin_rs::private::*;
 
-/// 板情報を取得するAPIのExample
+/// 余力情報を取得するAPIのExample
 ///
 /// # Example
 ///
-/// 実行前に環境変数`GMO_API_KEY`, `GMO_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
+/// 実行前に環境変数`GMO_COIN_API_KEY`, `GMO_COIN_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
 /// Private APIは実際に注文などが行われます。実行する際は十分気を付けてください。
 /// いかなる損害が発生しても当方は何ら責任を負いません。
 /// 全て自己責任でお願いします。
@@ -17,12 +17,9 @@ use gmo_coin_rs::private::*;
 /// ```
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let api_key = std::env::var("GMO_API_KEY")?;
-    let secret_key = std::env::var("GMO_API_SECRET")?;
-
     let http_client = Reqwest;
     let private_api = PrivateAPI::<Reqwest> { http_client };
-    let response = private_api.margin(&api_key, &secret_key).await?;
+    let response = private_api.margin().await?;
 
     println!("時価評価総額: {}", response.actual_profit_loss());
     println!("取引余力: {}", response.availabel_amount());

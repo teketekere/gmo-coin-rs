@@ -9,10 +9,10 @@ use crate::response::*;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
-/// 余力APIのパス。
+/// 余力情報APIのパス。
 const MARGIN_API_PATH: &str = "/v1/account/margin";
 
-/// 余力APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
+/// 余力情報APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
 pub struct Data {
     /// 時価評価総額。
@@ -32,7 +32,7 @@ pub struct Data {
     profit_loss: i64,
 }
 
-/// 余力APIから返ってくるレスポンスを格納する構造体。
+/// 余力情報APIから返ってくるレスポンスを格納する構造体。
 #[derive(Deserialize)]
 pub struct Margin {
     /// ステータスコード。
@@ -69,13 +69,9 @@ impl RestResponse<Margin> {
 }
 
 /// 余力情報APIを呼び出す。
-pub async fn request_margin(
-    http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
-) -> Result<RestResponse<Margin>, Error> {
-    let url = format!("{}{}", PRIVATE_ENDPOINT, MARGIN_API_PATH,);
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &MARGIN_API_PATH);
+pub async fn request_margin(http_client: &impl HttpClient) -> Result<RestResponse<Margin>, Error> {
+    let url = format!("{}{}", PRIVATE_ENDPOINT, MARGIN_API_PATH);
+    let headers = Headers::create_get_headers(&MARGIN_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Margin>(&response)
 }
@@ -107,9 +103,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_margin(&http_client, "apikey", "seckey")
-            .await
-            .unwrap();
+        let resp = request_margin(&http_client).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

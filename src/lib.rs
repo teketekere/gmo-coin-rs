@@ -12,7 +12,6 @@ pub mod json;
 pub mod private;
 pub mod public;
 pub mod response;
-pub mod secret;
 pub mod side;
 pub mod symbol;
 pub mod time_in_force;

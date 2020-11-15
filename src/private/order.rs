@@ -1,5 +1,6 @@
 //! 新規注文APIを実装する。
 
+#[allow(clippy::too_many_arguments)]
 use crate::end_point::*;
 use crate::error::Error;
 use crate::execution_type::ExecutionType;
@@ -115,8 +116,6 @@ fn build_limit_or_stop_paramters(
 /// 新規注文APIを呼び出す。
 pub async fn request_order(
     http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
     execution_type: &ExecutionType,
     symbol: &Symbol,
     side: &Side,
@@ -135,7 +134,7 @@ pub async fn request_order(
         price,
         losscut_price,
     );
-    let headers = Headers::create_post_headers(&api_key, &secret_key, &ORDER_API_PATH, &parameters);
+    let headers = Headers::create_post_headers(&ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<Order>(&response)
 }
@@ -164,8 +163,6 @@ mod tests {
         };
         let resp = request_order(
             &http_client,
-            "apikey",
-            "seckey",
             &ExecutionType::Market,
             &Symbol::BtcJpy,
             &Side::Buy,
@@ -197,8 +194,6 @@ mod tests {
         };
         let resp = request_order(
             &http_client,
-            "apikey",
-            "seckey",
             &ExecutionType::Limit,
             &Symbol::BtcJpy,
             &Side::Buy,
@@ -230,8 +225,6 @@ mod tests {
         };
         let resp = request_order(
             &http_client,
-            "apikey",
-            "seckey",
             &ExecutionType::Limit,
             &Symbol::BtcJpy,
             &Side::Buy,

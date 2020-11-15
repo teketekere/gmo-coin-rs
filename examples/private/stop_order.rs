@@ -8,7 +8,7 @@ use gmo_coin_rs::symbol::Symbol;
 ///
 /// # Example
 ///
-/// 実行前に環境変数`GMO_API_KEY`, `GMO_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
+/// 実行前に環境変数`GMO_COIN_API_KEY`, `GMO_COIN_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
 /// また`GMO_COIN_STOP_PRICE`で指値価格を指定します。
 ///
 /// Private APIは実際に注文などが行われます。実行する際は十分気を付けてください。
@@ -21,22 +21,13 @@ use gmo_coin_rs::symbol::Symbol;
 /// ```
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let api_key = std::env::var("GMO_API_KEY")?;
-    let secret_key = std::env::var("GMO_API_SECRET")?;
     let price: i64 = std::env::var("GMO_COIN_STOP_PRICE")?.parse().unwrap();
     let size = 0.01; // !!! 最小サイズ !!!
 
     let http_client = Reqwest;
     let private_api = PrivateAPI::<Reqwest> { http_client };
     let response = private_api
-        .stop_order(
-            &api_key,
-            &secret_key,
-            &Symbol::BtcJpy,
-            &Side::Buy,
-            size,
-            price,
-        )
+        .stop_order(&Symbol::BtcJpy, &Side::Buy, size, price)
         .await?;
 
     // 執行数量条件, ロスカットレートを指定する場合。

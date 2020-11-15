@@ -6,7 +6,7 @@ use gmo_coin_rs::private::*;
 ///
 /// # Example
 ///
-/// 実行前に環境変数`GMO_API_KEY`, `GMO_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
+/// 実行前に環境変数`GMO_COIN_API_KEY`, `GMO_COIN_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
 /// また`GMO_ORDER_ID`に"1234567..."という形式で取得する注文のIDを設定します。
 ///
 /// Private APIは実際に注文などが行われます。実行する際は十分気を付けてください。
@@ -19,19 +19,15 @@ use gmo_coin_rs::private::*;
 /// ```
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let api_key = std::env::var("GMO_API_KEY")?;
-    let secret_key = std::env::var("GMO_API_SECRET")?;
     let order_id = std::env::var("GMO_ORDER_ID")?;
 
     let http_client = Reqwest;
     let private_api = PrivateAPI::<Reqwest> { http_client };
-    let response = private_api
-        .executions_with_order_id(&api_key, &secret_key, &order_id)
-        .await?;
+    let response = private_api.executions_with_order_id(&order_id).await?;
 
     // 約定IDを指定して約定情報を取得する場合。
     // let execition_id = "1234...";
-    // let response = private_api.executions_with_execution_id(&api_key, &secret_key, &execution_id).await?;
+    // let response = private_api.executions_with_execution_id(&execution_id).await?;
 
     for execution in response.executions() {
         println!("約定ID: {}", execution.execution_id);

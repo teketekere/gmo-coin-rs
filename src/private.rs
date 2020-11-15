@@ -1,5 +1,6 @@
 //! Private APIを実装する。
 
+#[allow(clippy::too_many_arguments)]
 pub mod active_orders;
 pub mod assets;
 pub mod executions;
@@ -40,15 +41,9 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     ///
-    pub async fn margin(
-        &self,
-        api_key: &str,
-        secret_key: &str,
-    ) -> Result<RestResponse<Margin>, Error> {
-        let response = request_margin(&self.http_client, &api_key, &secret_key).await?;
+    pub async fn margin(&self) -> Result<RestResponse<Margin>, Error> {
+        let response = request_margin(&self.http_client).await?;
         Ok(response)
     }
 
@@ -56,15 +51,9 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     ///
-    pub async fn assets(
-        &self,
-        api_key: &str,
-        secret_key: &str,
-    ) -> Result<RestResponse<Assets>, Error> {
-        let response = request_assets(&self.http_client, &api_key, &secret_key).await?;
+    pub async fn assets(&self) -> Result<RestResponse<Assets>, Error> {
+        let response = request_assets(&self.http_client).await?;
         Ok(response)
     }
 
@@ -72,17 +61,10 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `order_ids` - 取得する注文の注文ID。最大10件まで指定できる。
     ///
-    pub async fn orders(
-        &self,
-        api_key: &str,
-        secret_key: &str,
-        order_ids: &[&str],
-    ) -> Result<RestResponse<Orders>, Error> {
-        let response = request_orders(&self.http_client, &api_key, &secret_key, &order_ids).await?;
+    pub async fn orders(&self, order_ids: &[&str]) -> Result<RestResponse<Orders>, Error> {
+        let response = request_orders(&self.http_client, &order_ids).await?;
         Ok(response)
     }
 
@@ -90,25 +72,14 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     ///
     pub async fn active_orders(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
-        let response = request_active_orders(
-            &self.http_client,
-            &api_key,
-            &secret_key,
-            &symbol,
-            DEFAULT_PAGE,
-            DEFAULT_COUNT,
-        )
-        .await?;
+        let response =
+            request_active_orders(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
         Ok(response)
     }
 
@@ -116,29 +87,17 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
     pub async fn active_orders_with_options(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         page: i32,
         count: i32,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
-        let response = request_active_orders(
-            &self.http_client,
-            &api_key,
-            &secret_key,
-            &symbol,
-            page,
-            count,
-        )
-        .await?;
+        let response = request_active_orders(&self.http_client, &symbol, page, count).await?;
         Ok(response)
     }
 
@@ -146,19 +105,13 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `order_id` - 注文ID。
     ///
     pub async fn executions_with_order_id(
         &self,
-        api_key: &str,
-        secret_key: &str,
         order_id: &str,
     ) -> Result<RestResponse<Executions>, Error> {
-        let response =
-            request_executions_with_order_id(&self.http_client, &api_key, &secret_key, &order_id)
-                .await?;
+        let response = request_executions_with_order_id(&self.http_client, &order_id).await?;
         Ok(response)
     }
 
@@ -166,23 +119,14 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `execution_id` - 約定ID。
     ///
     pub async fn executions_with_execution_id(
         &self,
-        api_key: &str,
-        secret_key: &str,
         execution_id: &str,
     ) -> Result<RestResponse<Executions>, Error> {
-        let response = request_executions_with_execution_id(
-            &self.http_client,
-            &api_key,
-            &secret_key,
-            &execution_id,
-        )
-        .await?;
+        let response =
+            request_executions_with_execution_id(&self.http_client, &execution_id).await?;
         Ok(response)
     }
 
@@ -190,25 +134,15 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     ///
     pub async fn latest_executions(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
     ) -> Result<RestResponse<LatestExecutions>, Error> {
-        let response = request_latest_executions(
-            &self.http_client,
-            &api_key,
-            &secret_key,
-            &symbol,
-            DEFAULT_PAGE,
-            DEFAULT_COUNT,
-        )
-        .await?;
+        let response =
+            request_latest_executions(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT)
+                .await?;
         Ok(response)
     }
 
@@ -216,29 +150,17 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
     pub async fn latest_executions_with_options(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         page: i32,
         count: i32,
     ) -> Result<RestResponse<LatestExecutions>, Error> {
-        let response = request_latest_executions(
-            &self.http_client,
-            &api_key,
-            &secret_key,
-            &symbol,
-            page,
-            count,
-        )
-        .await?;
+        let response = request_latest_executions(&self.http_client, &symbol, page, count).await?;
         Ok(response)
     }
 
@@ -246,27 +168,16 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
     pub async fn open_positions(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
     ) -> Result<RestResponse<OpenPositions>, Error> {
-        let response = request_open_positions(
-            &self.http_client,
-            &api_key,
-            &secret_key,
-            &symbol,
-            DEFAULT_PAGE,
-            DEFAULT_COUNT,
-        )
-        .await?;
+        let response =
+            request_open_positions(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
         Ok(response)
     }
 
@@ -274,29 +185,17 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `page` - 取得対象ページ。
     /// * `count` - 1ページ当たりの取得件数。
     ///
     pub async fn open_positions_with_options(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         page: i32,
         count: i32,
     ) -> Result<RestResponse<OpenPositions>, Error> {
-        let response = request_open_positions(
-            &self.http_client,
-            &api_key,
-            &secret_key,
-            &symbol,
-            page,
-            count,
-        )
-        .await?;
+        let response = request_open_positions(&self.http_client, &symbol, page, count).await?;
         Ok(response)
     }
 
@@ -304,18 +203,13 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     ///
     pub async fn position_summary(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
     ) -> Result<RestResponse<PositionSummary>, Error> {
-        let response =
-            request_position_summary(&self.http_client, &api_key, &secret_key, &symbol).await?;
+        let response = request_position_summary(&self.http_client, &symbol).await?;
         Ok(response)
     }
 
@@ -323,24 +217,18 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
     ///
     pub async fn market_order(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         side: &Side,
         size: f64,
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &api_key,
-            &secret_key,
             &ExecutionType::Market,
             &symbol,
             &side,
@@ -357,8 +245,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
@@ -366,8 +252,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     pub async fn market_order_with_options(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         side: &Side,
         size: f64,
@@ -375,8 +259,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &api_key,
-            &secret_key,
             &ExecutionType::Market,
             &symbol,
             &side,
@@ -393,8 +275,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
@@ -402,8 +282,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     pub async fn limit_order(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         side: &Side,
         size: f64,
@@ -411,8 +289,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &api_key,
-            &secret_key,
             &ExecutionType::Limit,
             &symbol,
             &side,
@@ -429,8 +305,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
@@ -440,8 +314,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     pub async fn limit_order_with_options(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         side: &Side,
         size: f64,
@@ -451,8 +323,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &api_key,
-            &secret_key,
             &ExecutionType::Limit,
             &symbol,
             &side,
@@ -469,8 +339,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
@@ -478,8 +346,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     pub async fn stop_order(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         side: &Side,
         size: f64,
@@ -487,8 +353,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &api_key,
-            &secret_key,
             &ExecutionType::Stop,
             &symbol,
             &side,
@@ -505,8 +369,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     /// # Arguments
     ///
-    /// * `api_key` - GMOコインのAPIキー。
-    /// * `secret_key` - GMOコインのAPIシークレット。
     /// * `symbol` - 有効注文を取得する銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
@@ -516,8 +378,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ///
     pub async fn stop_order_with_options(
         &self,
-        api_key: &str,
-        secret_key: &str,
         symbol: &Symbol,
         side: &Side,
         size: f64,
@@ -527,8 +387,6 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &api_key,
-            &secret_key,
             &ExecutionType::Stop,
             &symbol,
             &side,

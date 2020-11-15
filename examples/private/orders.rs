@@ -6,7 +6,7 @@ use gmo_coin_rs::private::*;
 ///
 /// # Example
 ///
-/// 実行前に環境変数`GMO_API_KEY`, `GMO_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
+/// 実行前に環境変数`GMO_COIN_API_KEY`, `GMO_COIN_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
 /// また`GMO_ORDER_IDS`に"orderid1,orderid2,..."という形式で取得する注文のIDを設定します。
 ///
 /// Private APIは実際に注文などが行われます。実行する際は十分気を付けてください。
@@ -19,16 +19,12 @@ use gmo_coin_rs::private::*;
 /// ```
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let api_key = std::env::var("GMO_API_KEY")?;
-    let secret_key = std::env::var("GMO_API_SECRET")?;
     let order_id: String = std::env::var("GMO_ORDER_IDS")?;
     let order_ids: Vec<&str> = order_id.split(',').collect();
 
     let http_client = Reqwest;
     let private_api = PrivateAPI::<Reqwest> { http_client };
-    let response = private_api
-        .orders(&api_key, &secret_key, &order_ids)
-        .await?;
+    let response = private_api.orders(&order_ids).await?;
 
     for order in response.orders() {
         println!("親注文ID: {}", order.root_order_id);

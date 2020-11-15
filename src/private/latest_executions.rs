@@ -60,8 +60,6 @@ impl RestResponse<LatestExecutions> {
 /// 最新の約定一覧APIを呼び出す。
 pub async fn request_latest_executions(
     http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
     symbol: &Symbol,
     page: i32,
     count: i32,
@@ -74,7 +72,7 @@ pub async fn request_latest_executions(
         page,
         count
     );
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &LATEST_EXECUTIONS_API_PATH);
+    let headers = Headers::create_get_headers(&LATEST_EXECUTIONS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<LatestExecutions>(&response)
 }
@@ -129,10 +127,9 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp =
-            request_latest_executions(&http_client, "apikey", "seckey", &Symbol::Btc, 1, 100)
-                .await
-                .unwrap();
+        let resp = request_latest_executions(&http_client, &Symbol::Btc, 1, 100)
+            .await
+            .unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(
@@ -154,10 +151,9 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp =
-            request_latest_executions(&http_client, "apikey", "seckey", &Symbol::BtcJpy, 1, 100)
-                .await
-                .unwrap();
+        let resp = request_latest_executions(&http_client, &Symbol::BtcJpy, 1, 100)
+            .await
+            .unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

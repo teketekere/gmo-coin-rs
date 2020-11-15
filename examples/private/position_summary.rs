@@ -7,7 +7,7 @@ use gmo_coin_rs::symbol::Symbol;
 ///
 /// # Example
 ///
-/// 実行前に環境変数`GMO_API_KEY`, `GMO_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
+/// 実行前に環境変数`GMO_COIN_API_KEY`, `GMO_COIN_API_SECRET`にGMOコインのAPIキー、APIシークレットを設定します。
 ///
 /// Private APIは実際に注文などが行われます。実行する際は十分気を付けてください。
 /// いかなる損害が発生しても当方は何ら責任を負いません。
@@ -19,14 +19,9 @@ use gmo_coin_rs::symbol::Symbol;
 /// ```
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let api_key = std::env::var("GMO_API_KEY")?;
-    let secret_key = std::env::var("GMO_API_SECRET")?;
-
     let http_client = Reqwest;
     let private_api = PrivateAPI::<Reqwest> { http_client };
-    let response = private_api
-        .position_summary(&api_key, &secret_key, &Symbol::BtcJpy)
-        .await?;
+    let response = private_api.position_summary(&Symbol::BtcJpy).await?;
 
     for summary in response.position_summaries() {
         println!("平均建玉レート: {}", summary.average_position_rate);

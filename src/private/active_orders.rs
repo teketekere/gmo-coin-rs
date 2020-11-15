@@ -60,8 +60,6 @@ impl RestResponse<ActiveOrders> {
 /// 有効注文一覧APIを呼び出す。オプショナルなパラメーターを明示的に指定する場合こちらを呼ぶ。
 pub async fn request_active_orders(
     http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
     symbol: &Symbol,
     page: i32,
     count: i32,
@@ -74,7 +72,7 @@ pub async fn request_active_orders(
         page,
         count,
     );
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &ACTIVE_ORDERS_API_PATH);
+    let headers = Headers::create_get_headers(&ACTIVE_ORDERS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<ActiveOrders>(&response)
 }
@@ -133,7 +131,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_active_orders(&http_client, "apikey", "seckey", &Symbol::Bch, 1, 100)
+        let resp = request_active_orders(&http_client, &Symbol::Bch, 1, 100)
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);
@@ -157,7 +155,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_active_orders(&http_client, "apikey", "seckey", &Symbol::BtcJpy, 1, 100)
+        let resp = request_active_orders(&http_client, &Symbol::BtcJpy, 1, 100)
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);

@@ -45,8 +45,6 @@ impl RestResponse<Orders> {
 /// 注文情報取得APIを呼び出す。
 pub async fn request_orders(
     http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
     order_ids: &[&str],
 ) -> Result<RestResponse<Orders>, Error> {
     let url = format!(
@@ -55,7 +53,7 @@ pub async fn request_orders(
         ORDERS_API_PATH,
         order_ids.join(",")
     );
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &ORDERS_API_PATH);
+    let headers = Headers::create_get_headers(&ORDERS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Orders>(&response)
 }
@@ -126,7 +124,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_orders(&http_client, "apikey", "seckey", &Vec::<&str>::new())
+        let resp = request_orders(&http_client, &Vec::<&str>::new())
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);
@@ -148,7 +146,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_orders(&http_client, "apikey", "seckey", &Vec::<&str>::new())
+        let resp = request_orders(&http_client, &Vec::<&str>::new())
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);

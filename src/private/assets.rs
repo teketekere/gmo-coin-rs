@@ -67,13 +67,9 @@ impl RestResponse<Assets> {
 }
 
 /// 資産残高APIを呼び出す。
-pub async fn request_assets(
-    http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
-) -> Result<RestResponse<Assets>, Error> {
+pub async fn request_assets(http_client: &impl HttpClient) -> Result<RestResponse<Assets>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, ASSETS_API_PATH,);
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &ASSETS_API_PATH);
+    let headers = Headers::create_get_headers(&ASSETS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Assets>(&response)
 }
@@ -121,9 +117,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_assets(&http_client, "apikey", "seckey")
-            .await
-            .unwrap();
+        let resp = request_assets(&http_client).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(
@@ -143,9 +137,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_assets(&http_client, "apikey", "seckey")
-            .await
-            .unwrap();
+        let resp = request_assets(&http_client).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

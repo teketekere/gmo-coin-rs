@@ -45,15 +45,13 @@ impl RestResponse<Executions> {
 /// 約定情報取得APIを呼び出す。注文IDを指定してAPIを呼び出す。
 pub async fn request_executions_with_order_id(
     http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
     order_id: &str,
 ) -> Result<RestResponse<Executions>, Error> {
     let url = format!(
         "{}{}?orderId={}",
         PRIVATE_ENDPOINT, EXECUTIONS_API_PATH, order_id,
     );
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &EXECUTIONS_API_PATH);
+    let headers = Headers::create_get_headers(&EXECUTIONS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Executions>(&response)
 }
@@ -61,15 +59,13 @@ pub async fn request_executions_with_order_id(
 /// 約定情報取得APIを呼び出す。約定IDを指定してAPIを呼び出す。
 pub async fn request_executions_with_execution_id(
     http_client: &impl HttpClient,
-    api_key: &str,
-    secret_key: &str,
     execution_id: &str,
 ) -> Result<RestResponse<Executions>, Error> {
     let url = format!(
         "{}{}?executionId={}",
         PRIVATE_ENDPOINT, EXECUTIONS_API_PATH, execution_id,
     );
-    let headers = Headers::create_get_headers(&api_key, &secret_key, &EXECUTIONS_API_PATH);
+    let headers = Headers::create_get_headers(&EXECUTIONS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Executions>(&response)
 }
@@ -119,7 +115,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_executions_with_execution_id(&http_client, "apikey", "seckey", "execid")
+        let resp = request_executions_with_execution_id(&http_client, "execid")
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);
@@ -141,7 +137,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_executions_with_order_id(&http_client, "apikey", "seckey", "orderid")
+        let resp = request_executions_with_order_id(&http_client, "orderid")
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);
