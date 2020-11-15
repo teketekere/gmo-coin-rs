@@ -1,6 +1,6 @@
 //! 有効注文一覧APIを実装する。
 
-use crate::dto::{Order, Pagination};
+use crate::dto::{get_pagination_default_value, get_vector_default_value, Order, Pagination};
 use crate::end_point::*;
 use crate::error::Error;
 use crate::headers::Headers;
@@ -21,9 +21,11 @@ const ACTIVE_ORDERS_API_METHOD: &str = "GET";
 #[derive(Deserialize)]
 pub struct Data {
     /// 有効注文の取得ページに関する情報。
+    #[serde(default = "get_pagination_default_value")]
     pub pagination: Pagination,
 
     /// 注文情報の配列。
+    #[serde(default = "get_vector_default_value::<Order>")]
     pub list: Vec<Order>,
 }
 
@@ -123,6 +125,14 @@ mod tests {
     }
           "#;
 
+    const SAMPLE_EMPTY_RESPONSE: &str = r#"
+    {
+        "status": 0,
+        "data":{},
+        "responsetime":"2020-11-15T06:32:13.747Z"
+    }
+          "#;
+
     #[tokio::test]
     async fn should_return_ok_when_http_client_returns_correct_response() {
         let body = SAMPLE_RESPONSE;
@@ -145,5 +155,29 @@ mod tests {
         assert_eq!(resp.active_orders().len(), 1);
         assert_eq!(resp.current_page(), 1);
         assert_eq!(resp.count(), 30);
+    }
+
+    #[tokio::test]
+    async fn should_not_return_err_when_http_client_returns_empty_response() {
+        let body = SAMPLE_EMPTY_RESPONSE;
+        let http_client = InmemClient {
+            http_status_code: 200,
+            body_text: body.to_string(),
+            return_error: false,
+        };
+        let resp = request_active_orders(&http_client, "apikey", "seckey", &Symbol::BtcJpy, 1, 100)
+            .await
+            .unwrap();
+        assert_eq!(resp.http_status_code, 200);
+        assert_eq!(resp.body.status, 0);
+        assert_eq!(
+            resp.body
+                .responsetime
+                .to_rfc3339_opts(SecondsFormat::Millis, true),
+            "2020-11-15T06:32:13.747Z"
+        );
+        assert_eq!(resp.active_orders().len(), 0);
+        assert_eq!(resp.current_page(), 0);
+        assert_eq!(resp.count(), 0);
     }
 }

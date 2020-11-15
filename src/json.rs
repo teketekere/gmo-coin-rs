@@ -75,12 +75,6 @@ where
     })
 }
 
-/// GMOコインからのレスポンスでフィールドが無い場合のデフォルト値。
-/// 使用箇所は注文情報取得APIなど。
-pub fn get_string_default_value() -> String {
-    "NONE".to_string()
-}
-
 #[cfg(test)]
 mod tests {
     use crate::json::{gmo_timestamp_to_chrono_timestamp, str_to_f64, str_to_i64};

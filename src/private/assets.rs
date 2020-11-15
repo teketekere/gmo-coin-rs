@@ -1,5 +1,6 @@
 //! 資産残高APIを実装する。
 
+use crate::dto::get_vector_default_value;
 use crate::end_point::*;
 use crate::error::Error;
 use crate::headers::Headers;
@@ -57,6 +58,7 @@ pub struct Assets {
     pub responsetime: DateTime<Utc>,
 
     /// レスポンスの`data`の部分。
+    #[serde(default = "get_vector_default_value::<Data>")]
     pub data: Vec<Data>,
 }
 
@@ -107,6 +109,14 @@ mod tests {
     }
           "#;
 
+    const SAMPLE_EMPTY_RESPONSE: &str = r#"
+    {
+        "status": 0,
+        "data": [],
+        "responsetime":"2020-11-15T06:32:13.747Z"
+    }
+    "#;
+
     #[tokio::test]
     async fn should_return_ok_when_http_client_returns_correct_response() {
         let body = SAMPLE_RESPONSE;
@@ -127,5 +137,27 @@ mod tests {
             "2019-03-19T02:15:06.055Z"
         );
         assert_eq!(resp.assets().len(), 2);
+    }
+
+    #[tokio::test]
+    async fn should_not_return_err_when_http_client_returns_empty_response() {
+        let body = SAMPLE_EMPTY_RESPONSE;
+        let http_client = InmemClient {
+            http_status_code: 200,
+            body_text: body.to_string(),
+            return_error: false,
+        };
+        let resp = request_assets(&http_client, "apikey", "seckey")
+            .await
+            .unwrap();
+        assert_eq!(resp.http_status_code, 200);
+        assert_eq!(resp.body.status, 0);
+        assert_eq!(
+            resp.body
+                .responsetime
+                .to_rfc3339_opts(SecondsFormat::Millis, true),
+            "2020-11-15T06:32:13.747Z"
+        );
+        assert_eq!(resp.assets().len(), 0);
     }
 }

@@ -1,6 +1,6 @@
 //! 最新の約定一覧APIを実装する。
 
-use crate::dto::{Execution, Pagination};
+use crate::dto::{get_pagination_default_value, get_vector_default_value, Execution, Pagination};
 use crate::end_point::*;
 use crate::error::Error;
 use crate::headers::Headers;
@@ -21,9 +21,11 @@ const LATEST_EXECUTIONS_API_METHOD: &str = "GET";
 #[derive(Deserialize)]
 pub struct Data {
     /// 最新の約定一覧の取得ページに関する情報。
+    #[serde(default = "get_pagination_default_value")]
     pub pagination: Pagination,
 
     /// 約定情報の配列。
+    #[serde(default = "get_vector_default_value::<Execution>")]
     pub list: Vec<Execution>,
 }
 
@@ -117,7 +119,15 @@ mod tests {
         },
         "responsetime": "2019-03-19T02:15:06.086Z"
     }
-          "#;
+    "#;
+
+    const SAMPLE_EMPTY_RESPONSE: &str = r#"
+    {
+        "status": 0,
+        "data":{},
+        "responsetime":"2020-11-15T06:32:13.747Z"
+    }
+    "#;
 
     #[tokio::test]
     async fn should_return_ok_when_http_client_returns_correct_response() {
@@ -142,5 +152,30 @@ mod tests {
         assert_eq!(resp.latest_executions().len(), 1);
         assert_eq!(resp.current_page(), 1);
         assert_eq!(resp.count(), 30);
+    }
+
+    #[tokio::test]
+    async fn should_not_return_err_when_http_client_returns_empty_response() {
+        let body = SAMPLE_EMPTY_RESPONSE;
+        let http_client = InmemClient {
+            http_status_code: 200,
+            body_text: body.to_string(),
+            return_error: false,
+        };
+        let resp =
+            request_latest_executions(&http_client, "apikey", "seckey", &Symbol::BtcJpy, 1, 100)
+                .await
+                .unwrap();
+        assert_eq!(resp.http_status_code, 200);
+        assert_eq!(resp.body.status, 0);
+        assert_eq!(
+            resp.body
+                .responsetime
+                .to_rfc3339_opts(SecondsFormat::Millis, true),
+            "2020-11-15T06:32:13.747Z"
+        );
+        assert_eq!(resp.latest_executions().len(), 0);
+        assert_eq!(resp.current_page(), 0);
+        assert_eq!(resp.count(), 0);
     }
 }

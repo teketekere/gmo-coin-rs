@@ -1,6 +1,6 @@
 //! 約定情報取得APIを実装する。
 
-use crate::dto::Execution;
+use crate::dto::{get_vector_default_value, Execution};
 use crate::end_point::*;
 use crate::error::Error;
 use crate::headers::Headers;
@@ -20,6 +20,7 @@ const EXECUTION_API_METHOD: &str = "GET";
 #[derive(Deserialize)]
 pub struct Data {
     /// 約定情報の配列。
+    #[serde(default = "get_vector_default_value::<Execution>")]
     pub list: Vec<Execution>,
 }
 
@@ -115,6 +116,14 @@ mod tests {
     }
           "#;
 
+    const SAMPLE_EMPTY_RESPONSE: &str = r#"
+    {
+        "status": 0,
+        "data":{},
+        "responsetime":"2020-11-15T06:32:13.747Z"
+    }
+    "#;
+
     #[tokio::test]
     async fn should_return_ok_when_http_client_returns_correct_response() {
         let body = SAMPLE_RESPONSE;
@@ -135,5 +144,27 @@ mod tests {
             "2019-03-19T02:15:06.081Z"
         );
         assert_eq!(resp.executions().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn should_not_return_err_when_http_client_returns_empty_response() {
+        let body = SAMPLE_EMPTY_RESPONSE;
+        let http_client = InmemClient {
+            http_status_code: 200,
+            body_text: body.to_string(),
+            return_error: false,
+        };
+        let resp = request_executions_with_order_id(&http_client, "apikey", "seckey", "orderid")
+            .await
+            .unwrap();
+        assert_eq!(resp.http_status_code, 200);
+        assert_eq!(resp.body.status, 0);
+        assert_eq!(
+            resp.body
+                .responsetime
+                .to_rfc3339_opts(SecondsFormat::Millis, true),
+            "2020-11-15T06:32:13.747Z"
+        );
+        assert_eq!(resp.executions().len(), 0);
     }
 }

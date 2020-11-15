@@ -145,3 +145,21 @@ pub const DEFAULT_PAGE: i32 = 1;
 
 /// 1ページ当たりの取得件数のデフォルト値。APIを呼び出すとき、数値が指定されない場合はこの値を用いる。
 pub const DEFAULT_COUNT: i32 = 100;
+
+/// GMOコインからのレスポンスが省略されている場合の文字列型フィールドのデフォルト値。
+pub fn get_string_default_value() -> String {
+    "NONE".to_string()
+}
+
+/// GMOコインからのレスポンスが省略されている場合のVec型フィールドのデフォルト値。
+pub fn get_vector_default_value<T>() -> Vec<T> {
+    Vec::<T>::new()
+}
+
+/// GMOコインからのレスポンスが省略されている場合のPagination型フィールドのデフォルト値。
+pub fn get_pagination_default_value() -> Pagination {
+    Pagination {
+        current_page: 0,
+        count: 0,
+    }
+}
