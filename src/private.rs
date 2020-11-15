@@ -1,6 +1,5 @@
 //! Private APIを実装する。
 
-#[allow(clippy::too_many_arguments)]
 pub mod active_orders;
 pub mod assets;
 pub mod executions;

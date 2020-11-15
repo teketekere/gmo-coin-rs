@@ -1,6 +1,7 @@
 //! 新規注文APIを実装する。
 
-#[allow(clippy::too_many_arguments)]
+#![allow(clippy::too_many_arguments)]
+
 use crate::end_point::*;
 use crate::error::Error;
 use crate::execution_type::ExecutionType;
