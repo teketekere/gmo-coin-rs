@@ -67,7 +67,7 @@ impl RestResponse<Status> {
 }
 
 /// 取引所ステータスAPIを呼び出す。
-pub async fn get_status(http_client: &impl HttpClient) -> Result<RestResponse<Status>, Error> {
+pub async fn request_status(http_client: &impl HttpClient) -> Result<RestResponse<Status>, Error> {
     let url = format!("{}{}", PUBLIC_ENDPOINT, STATUS_API_PATH,);
     let headers = Headers::create_empty_headers();
     let response = http_client.get(url, &headers).await?;
@@ -96,7 +96,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_status(&http_client).await.unwrap();
+        let resp = request_status(&http_client).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(
@@ -117,7 +117,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_status(&http_client).await;
+        let resp = request_status(&http_client).await;
         assert_eq!(resp.is_err(), true);
     }
 
@@ -129,7 +129,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: true,
         };
-        let resp = get_status(&http_client).await;
+        let resp = request_status(&http_client).await;
         assert_eq!(resp.is_err(), true);
     }
 }

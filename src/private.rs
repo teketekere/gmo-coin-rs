@@ -9,14 +9,14 @@ pub mod orders;
 use crate::error::Error;
 use crate::http_client::HttpClient;
 use crate::private::active_orders::{
-    get_active_orders, get_active_orders_with_options, ActiveOrders,
+    request_active_orders, request_active_orders_with_options, ActiveOrders,
 };
-use crate::private::assets::{get_assets, Assets};
+use crate::private::assets::{request_assets, Assets};
 use crate::private::executions::{
     request_executions_with_execution_id, request_executions_with_order_id, Executions,
 };
-use crate::private::margin::{get_margin, Margin};
-use crate::private::orders::{get_orders, Orders};
+use crate::private::margin::{request_margin, Margin};
+use crate::private::orders::{request_orders, Orders};
 use crate::response::RestResponse;
 use crate::symbol::Symbol;
 
@@ -38,7 +38,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         api_key: &str,
         secret_key: &str,
     ) -> Result<RestResponse<Margin>, Error> {
-        let response = get_margin(&self.http_client, &api_key, &secret_key).await?;
+        let response = request_margin(&self.http_client, &api_key, &secret_key).await?;
         Ok(response)
     }
 
@@ -54,7 +54,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         api_key: &str,
         secret_key: &str,
     ) -> Result<RestResponse<Assets>, Error> {
-        let response = get_assets(&self.http_client, &api_key, &secret_key).await?;
+        let response = request_assets(&self.http_client, &api_key, &secret_key).await?;
         Ok(response)
     }
 
@@ -72,7 +72,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         secret_key: &str,
         order_ids: &[&str],
     ) -> Result<RestResponse<Orders>, Error> {
-        let response = get_orders(&self.http_client, &api_key, &secret_key, &order_ids).await?;
+        let response = request_orders(&self.http_client, &api_key, &secret_key, &order_ids).await?;
         Ok(response)
     }
 
@@ -90,7 +90,8 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         secret_key: &str,
         symbol: &Symbol,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
-        let response = get_active_orders(&self.http_client, &api_key, &secret_key, &symbol).await?;
+        let response =
+            request_active_orders(&self.http_client, &api_key, &secret_key, &symbol).await?;
         Ok(response)
     }
 
@@ -112,7 +113,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
-        let response = get_active_orders_with_options(
+        let response = request_active_orders_with_options(
             &self.http_client,
             &api_key,
             &secret_key,

@@ -73,7 +73,7 @@ impl RestResponse<Margin> {
 }
 
 /// 余力情報APIを呼び出す。
-pub async fn get_margin(
+pub async fn request_margin(
     http_client: &impl HttpClient,
     api_key: &str,
     secret_key: &str,
@@ -112,7 +112,9 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_margin(&http_client, "apikey", "seckey").await.unwrap();
+        let resp = request_margin(&http_client, "apikey", "seckey")
+            .await
+            .unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

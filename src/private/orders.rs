@@ -45,7 +45,7 @@ impl RestResponse<Orders> {
 }
 
 /// 注文情報取得APIを呼び出す。
-pub async fn get_orders(
+pub async fn request_orders(
     http_client: &impl HttpClient,
     api_key: &str,
     secret_key: &str,
@@ -121,7 +121,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_orders(&http_client, "apikey", "seckey", &Vec::<&str>::new())
+        let resp = request_orders(&http_client, "apikey", "seckey", &Vec::<&str>::new())
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);

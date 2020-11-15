@@ -113,7 +113,7 @@ impl RestResponse<Ticker> {
 }
 
 /// 最新レートAPIを呼び出す。
-pub async fn get_ticker(
+pub async fn request_ticker(
     http_client: &impl HttpClient,
     symbol: &Symbol,
 ) -> Result<RestResponse<Ticker>, Error> {
@@ -160,7 +160,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = get_ticker(&http_client, &Symbol::Btc).await.unwrap();
+        let resp = request_ticker(&http_client, &Symbol::Btc).await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(
