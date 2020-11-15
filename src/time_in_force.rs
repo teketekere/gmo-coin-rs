@@ -23,7 +23,7 @@ pub const SOK: &str = "SOK";
 
 impl TimeInForce {
     /// 執行数量条件を文字列にする。
-    pub fn tif_to_string(&self) -> &str {
+    pub fn to_string(&self) -> &str {
         match self {
             TimeInForce::Fak => FAK,
             TimeInForce::Fas => FAS,
