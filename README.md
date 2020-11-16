@@ -5,11 +5,11 @@ Rust 製の GMOCoin API のクライアントライブラリです。
 ## 実装状況
 
 - Public API
+- Private API
 
   した
 
 - Public Websocket API
-- Private API
 - Private Websocket API
 
   まだ
