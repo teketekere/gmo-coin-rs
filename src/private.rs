@@ -7,6 +7,7 @@ pub mod assets;
 pub mod cancel_bulk_order;
 pub mod cancel_order;
 pub mod cancel_orders;
+pub mod change_losscut_price;
 pub mod change_order;
 pub mod close_bulk_order;
 pub mod close_order;
@@ -27,6 +28,7 @@ use crate::private::assets::{request_assets, Assets};
 use crate::private::cancel_bulk_order::{request_cancel_bulk_order, CancelBulkOrder};
 use crate::private::cancel_order::{request_cancel_order, CancelOrder};
 use crate::private::cancel_orders::{request_cancel_orders, CancelOrders};
+use crate::private::change_losscut_price::{request_change_losscut_price, ChangeLosscutPrice};
 use crate::private::change_order::{request_change_order, ChangeOrder};
 use crate::private::close_bulk_order::{request_close_bulk_order, CloseBulkOrder};
 use crate::private::close_order::{request_close_order, CloseOrder};
@@ -378,7 +380,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 注文の一括キャンセルAPIを呼び出す。
+    /// 注文の一括キャンセルAPIをオプション引数つきで呼び出す。
     ///
     /// # Arguments
     ///
@@ -441,7 +443,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 決済注文APIを呼び出す。
+    /// 決済注文APIをオプション引数つきで呼び出す。
     ///
     /// # Arguments
     ///
@@ -509,7 +511,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 一括決済注文APIを呼び出す。
+    /// 一括決済注文APIをオプション引数つきで呼び出す。
     ///
     /// # Arguments
     ///
@@ -539,6 +541,23 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
             &time_in_force,
         )
         .await?;
+        Ok(response)
+    }
+
+    /// ロスカットレート変更APIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `position_id` - 建玉ID。
+    /// * `losscut_price` - ロスカットレート。
+    ///
+    pub async fn change_losscut_price(
+        &self,
+        position_id: &str,
+        losscut_price: i64,
+    ) -> Result<RestResponse<ChangeLosscutPrice>, Error> {
+        let response =
+            request_change_losscut_price(&self.http_client, &position_id, losscut_price).await?;
         Ok(response)
     }
 }

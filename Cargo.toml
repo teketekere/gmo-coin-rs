@@ -107,3 +107,7 @@ path = "examples/private/close_order.rs"
 [[example]]
 name = "close_bulk_order"
 path = "examples/private/close_bulk_order.rs"
+
+[[example]]
+name = "change_losscut_price"
+path = "examples/private/change_losscut_price.rs"
