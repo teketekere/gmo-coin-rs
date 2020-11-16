@@ -8,6 +8,7 @@ pub mod cancel_bulk_order;
 pub mod cancel_order;
 pub mod cancel_orders;
 pub mod change_order;
+pub mod close_bulk_order;
 pub mod close_order;
 pub mod executions;
 pub mod latest_executions;
@@ -27,6 +28,7 @@ use crate::private::cancel_bulk_order::{request_cancel_bulk_order, CancelBulkOrd
 use crate::private::cancel_order::{request_cancel_order, CancelOrder};
 use crate::private::cancel_orders::{request_cancel_orders, CancelOrders};
 use crate::private::change_order::{request_change_order, ChangeOrder};
+use crate::private::close_bulk_order::{request_close_bulk_order, CloseBulkOrder};
 use crate::private::close_order::{request_close_order, CloseOrder};
 use crate::private::executions::{
     request_executions_with_execution_id, request_executions_with_order_id, Executions,
@@ -46,6 +48,13 @@ use crate::time_in_force::TimeInForce;
 /// Private API。
 pub struct PrivateAPI<T: HttpClient + std::marker::Sync + std::marker::Send> {
     pub http_client: T,
+}
+
+fn get_default_time_in_force(execution_type: &ExecutionType) -> TimeInForce {
+    match execution_type {
+        ExecutionType::Limit => TimeInForce::Fas,
+        _ => TimeInForce::Fak,
+    }
 }
 
 impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
@@ -243,10 +252,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         size: f64,
         price: Option<i64>,
     ) -> Result<RestResponse<Order>, Error> {
-        let time_in_force = match execution_type {
-            ExecutionType::Limit => TimeInForce::Fas,
-            _ => TimeInForce::Fak,
-        };
+        let time_in_force = get_default_time_in_force(&execution_type);
         let response = request_order(
             &self.http_client,
             &execution_type,
@@ -420,10 +426,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         price: Option<i64>,
         position_id: &str,
     ) -> Result<RestResponse<CloseOrder>, Error> {
-        let time_in_force = match execution_type {
-            ExecutionType::Limit => TimeInForce::Fas,
-            _ => TimeInForce::Fak,
-        };
+        let time_in_force = get_default_time_in_force(&execution_type);
         let response = request_close_order(
             &self.http_client,
             &execution_type,
@@ -468,6 +471,71 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
             size,
             price,
             &position_id,
+            &time_in_force,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 一括決済注文APIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `execution_type` - 注文方法。
+    /// * `symbol` - 銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。Marketの場合は不要。
+    ///
+    pub async fn close_bulk_order(
+        &self,
+        execution_type: &ExecutionType,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: Option<i64>,
+    ) -> Result<RestResponse<CloseBulkOrder>, Error> {
+        let time_in_force = get_default_time_in_force(&execution_type);
+        let response = request_close_bulk_order(
+            &self.http_client,
+            &execution_type,
+            &symbol,
+            &side,
+            size,
+            price,
+            &time_in_force,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 一括決済注文APIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `execution_type` - 注文方法。
+    /// * `symbol` - 銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。Marketの場合は不要。
+    /// * `time_in_force` - 執行数量条件。
+    ///
+    pub async fn close_bulk_order_with_options(
+        &self,
+        execution_type: &ExecutionType,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: Option<i64>,
+        time_in_force: &TimeInForce,
+    ) -> Result<RestResponse<CloseBulkOrder>, Error> {
+        let response = request_close_bulk_order(
+            &self.http_client,
+            &execution_type,
+            &symbol,
+            &side,
+            size,
+            price,
             &time_in_force,
         )
         .await?;
