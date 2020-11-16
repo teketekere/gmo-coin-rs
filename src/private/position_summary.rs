@@ -94,7 +94,7 @@ mod tests {
     "#;
 
     #[tokio::test]
-    async fn should_return_ok_when_http_client_returns_correct_response() {
+    async fn test_position_summary() {
         let body = SAMPLE_RESPONSE;
         let http_client = InmemClient {
             http_status_code: 200,
@@ -116,7 +116,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn should_not_return_err_when_http_client_returns_empty_response() {
+    async fn test_position_summary_when_empty_response() {
         let body = SAMPLE_EMPTY_RESPONSE;
         let http_client = InmemClient {
             http_status_code: 200,

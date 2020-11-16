@@ -93,10 +93,10 @@ mod tests {
         },
         "responsetime": "2019-03-19T02:15:06.051Z"
     }
-          "#;
+    "#;
 
     #[tokio::test]
-    async fn should_return_ok_when_http_client_returns_correct_response() {
+    async fn test_margin() {
         let body = MARGIN_RESPONSE_SAMPLE;
         let http_client = InmemClient {
             http_status_code: 200,

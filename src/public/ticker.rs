@@ -153,7 +153,7 @@ mod tests {
       }"#;
 
     #[tokio::test]
-    async fn should_return_ok_when_http_client_returns_correct_response() {
+    async fn test_ticker() {
         let body = TICKER_RESPONSE_SAMPLE;
         let http_client = InmemClient {
             http_status_code: 200,

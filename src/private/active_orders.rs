@@ -113,7 +113,7 @@ mod tests {
         },
         "responsetime": "2019-03-19T01:07:24.217Z"
     }
-          "#;
+    "#;
 
     const SAMPLE_EMPTY_RESPONSE: &str = r#"
     {
@@ -121,10 +121,10 @@ mod tests {
         "data":{},
         "responsetime":"2020-11-15T06:32:13.747Z"
     }
-          "#;
+    "#;
 
     #[tokio::test]
-    async fn should_return_ok_when_http_client_returns_correct_response() {
+    async fn test_active_orders() {
         let body = SAMPLE_RESPONSE;
         let http_client = InmemClient {
             http_status_code: 200,
@@ -148,7 +148,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn should_not_return_err_when_http_client_returns_empty_response() {
+    async fn test_active_orders_when_empty_response() {
         let body = SAMPLE_EMPTY_RESPONSE;
         let http_client = InmemClient {
             http_status_code: 200,

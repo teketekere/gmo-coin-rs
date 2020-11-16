@@ -89,7 +89,7 @@ mod tests {
       }"#;
 
     #[tokio::test]
-    async fn should_return_ok_when_http_client_returns_correct_response() {
+    async fn test_status() {
         let body = STATUS_RESPONSE_SAMPLE;
         let http_client = InmemClient {
             http_status_code: 200,
@@ -110,7 +110,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn should_return_ng_when_body_cannot_be_parsed() {
+    async fn test_status_when_body_cannot_be_parsed() {
         let body = "json parse dekinaiyo";
         let http_client = InmemClient {
             http_status_code: 200,
@@ -122,7 +122,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn should_return_ng_when_http_client_returns_ng() {
+    async fn test_status_when_inner_error_happens() {
         let body = STATUS_RESPONSE_SAMPLE;
         let http_client = InmemClient {
             http_status_code: 200,
