@@ -1,7 +1,7 @@
 use gmo_coin_rs::error::Error;
 use gmo_coin_rs::http_client::Reqwest;
 use gmo_coin_rs::public::*;
-use gmo_coin_rs::symbol::BTC;
+use gmo_coin_rs::symbol::Symbol;
 
 /// 取引履歴を取得するAPIのExample
 ///
@@ -14,29 +14,26 @@ use gmo_coin_rs::symbol::BTC;
 async fn main() -> Result<(), Error> {
     let http_client = Reqwest;
     let public_api = PublicAPI::<Reqwest> { http_client };
-    let response = public_api.trades(BTC).await?;
+    let response = public_api.trades(&Symbol::Btc).await?;
 
-    // 取得対象ページ、1ページ当たりの取得件数を取得する場合は次のようにする。
+    // 取得対象ページ、1ページ当たりの取得件数を指定する場合。
     // let page = 2;
     // let count = 30;
-    // let response = public_api.trades_with_options(BTC).await?;
+    // let response = public_api.trades_with_options(BTC, page, count).await?;
 
-    println!("取引履歴:");
+    println!("取得対象ページ: {}", response.current_page());
+    println!("取得件数: {}\n", response.count());
+
     let trades = response.trades();
     for trade in trades {
-        println!(
-            "約定価格: {}, 売買区分: {}, 約定数量: {}, 約定日時: {}",
-            trade.price, trade.side, trade.size, trade.timestamp
-        );
+        println!("約定価格: {}", trade.price);
+        println!("売買区分: {}", trade.side);
+        println!("約定数量: {}", trade.size);
+        println!("約定日時: {}\n", trade.timestamp);
     }
 
-    println!("取得対象ページ: {}", response.pagination().currentPage);
-    println!("取得件数: {}", response.pagination().count);
-
-    println!(
-        "HTTPステータスコード: {}\nステータスコード: {}\nAPIを呼び出した時間: {}",
-        response.http_status_code, response.body.status, response.body.responsetime,
-    );
-
+    println!("HTTPステータスコード: {}", response.http_status_code);
+    println!("ステータスコード: {}", response.body.status);
+    println!("APIを呼び出した時間: {}", response.body.responsetime,);
     Ok(())
 }

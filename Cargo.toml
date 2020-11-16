@@ -13,14 +13,16 @@ include = [
 ]
 
 [dependencies]
-reqwest = { version = "0.10.8", features = ["json"] }
+reqwest = { version = "0.10", features = ["json"] }
 tokio = { version = "0.2", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-async-trait = "0.1.41"
-thiserror = "1.0.22"
+async-trait = "0.1"
+thiserror = "1.0"
 url = "2.1"
 chrono = "0.4"
+hex = "0.4"
+ring = "0.16"
 
 [[example]]
 name = "status"
@@ -37,3 +39,75 @@ path = "examples/public/orderbooks.rs"
 [[example]]
 name = "trades"
 path = "examples/public/trades.rs"
+
+[[example]]
+name = "margin"
+path = "examples/private/margin.rs"
+
+[[example]]
+name = "assets"
+path = "examples/private/assets.rs"
+
+[[example]]
+name = "orders"
+path = "examples/private/orders.rs"
+
+[[example]]
+name = "active_orders"
+path = "examples/private/active_orders.rs"
+
+[[example]]
+name = "executions"
+path = "examples/private/executions.rs"
+
+[[example]]
+name = "latest_executions"
+path = "examples/private/latest_executions.rs"
+
+[[example]]
+name = "open_positions"
+path = "examples/private/open_positions.rs"
+
+[[example]]
+name = "position_summary"
+path = "examples/private/position_summary.rs"
+
+[[example]]
+name = "market_order"
+path = "examples/private/market_order.rs"
+
+[[example]]
+name = "limit_order"
+path = "examples/private/limit_order.rs"
+
+[[example]]
+name = "stop_order"
+path = "examples/private/stop_order.rs"
+
+[[example]]
+name = "change_order"
+path = "examples/private/change_order.rs"
+
+[[example]]
+name = "cancel_order"
+path = "examples/private/cancel_order.rs"
+
+[[example]]
+name = "cancel_orders"
+path = "examples/private/cancel_orders.rs"
+
+[[example]]
+name = "cancel_bulk_order"
+path = "examples/private/cancel_bulk_order.rs"
+
+[[example]]
+name = "close_order"
+path = "examples/private/close_order.rs"
+
+[[example]]
+name = "close_bulk_order"
+path = "examples/private/close_bulk_order.rs"
+
+[[example]]
+name = "change_losscut_price"
+path = "examples/private/change_losscut_price.rs"

@@ -6,22 +6,31 @@ use thiserror::Error;
 /// 異常が発生したときに投げるエラー。
 #[derive(Debug, Error)]
 pub enum Error {
-    #[error("reqwest error")]
+    #[error("reqwestがエラーを投げた")]
     ReqwestError(reqwest::Error),
 
-    #[error("serde_json error")]
+    #[error("HTTPレスポンスのボディをserde_jsonで構造体にバインディングしてるとこで異常があった")]
     SerdeJsonError(serde_json::Error),
 
-    #[error("url parse error")]
+    #[error("URLを作るとこで異常が起きた")]
     UrlParseError(url::ParseError),
 
-    #[error("deserialize error")]
-    DeserializeError(),
+    #[error("空のレスポンスが返ってこないはずの箇所で空のレスポンスが返ってきた")]
+    EmptyResponseError(),
 
-    #[error("api error")]
+    #[error("GMOコインのAPIからエラーレスポンスが返ってきた")]
     APIError(ErrorResponse),
 
-    #[error("Unknown error")]
+    #[error("環境変数を読み取れなかった")]
+    EnvVarError(std::env::VarError),
+
+    #[error("IDを文字列から数値に変換できなかった")]
+    IdToNumberError(String),
+
+    #[error("指値/逆指値注文で価格が指定されていない")]
+    PriceNotSpecifiedError(),
+
+    #[error("デバッグ用")]
     UnknownError,
 }
 
@@ -40,5 +49,11 @@ impl From<serde_json::Error> for Error {
 impl From<url::ParseError> for Error {
     fn from(e: url::ParseError) -> Self {
         Error::UrlParseError(e)
+    }
+}
+
+impl From<std::env::VarError> for Error {
+    fn from(e: std::env::VarError) -> Self {
+        Error::EnvVarError(e)
     }
 }

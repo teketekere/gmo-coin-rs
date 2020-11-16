@@ -3,14 +3,19 @@
 use serde::Deserialize;
 
 /// HTTPクライアントから返ってくるそのままのレスポンスを持つ構造体。
+#[derive(Debug)]
 pub struct RawResponse {
     pub http_status_code: u16,
     pub body_text: String,
 }
 
 /// Public API, Private APIの結果として返す構造体。
+#[derive(Debug)]
 pub struct RestResponse<T> {
+    /// HTTPステータスコード。
     pub http_status_code: u16,
+
+    /// GMOコインからのレスポンスのボディ部分。
     pub body: T,
 }
 
