@@ -2,6 +2,7 @@
 
 pub mod active_orders;
 pub mod assets;
+pub mod cancel_bulk_order;
 pub mod cancel_order;
 pub mod cancel_orders;
 pub mod change_order;
@@ -19,6 +20,7 @@ use crate::execution_type::ExecutionType;
 use crate::http_client::HttpClient;
 use crate::private::active_orders::{request_active_orders, ActiveOrders};
 use crate::private::assets::{request_assets, Assets};
+use crate::private::cancel_bulk_order::{request_cancel_bulk_order, CancelBulkOrder};
 use crate::private::cancel_order::{request_cancel_order, CancelOrder};
 use crate::private::cancel_orders::{request_cancel_orders, CancelOrders};
 use crate::private::change_order::{request_change_order, ChangeOrder};
@@ -32,6 +34,7 @@ use crate::private::order::{request_order, Order};
 use crate::private::orders::{request_orders, Orders};
 use crate::private::position_summary::{request_position_summary, PositionSummary};
 use crate::response::RestResponse;
+use crate::settle_type::SettleType;
 use crate::side::Side;
 use crate::symbol::Symbol;
 use crate::time_in_force::TimeInForce;
@@ -461,6 +464,49 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         order_ids: &[&str],
     ) -> Result<RestResponse<CancelOrders>, Error> {
         let response = request_cancel_orders(&self.http_client, &order_ids).await?;
+        Ok(response)
+    }
+
+    /// 注文の一括キャンセルAPIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `symbols` - 銘柄の配列。
+    ///
+    pub async fn cancel_bulk_order(
+        &self,
+        symbols: &[&Symbol],
+    ) -> Result<RestResponse<CancelBulkOrder>, Error> {
+        let response =
+            request_cancel_bulk_order(&self.http_client, &symbols, None, None, false).await?;
+        Ok(response)
+    }
+
+    /// 注文の一括キャンセルAPIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `symbols` - 銘柄の配列。
+    /// * `side` - 指定時、指定された売買区分の注文を取り消し対象にする。
+    /// * `settle_type` - 指定時、現物取引注文と指定された決済区分のレバレッジ取引注文を取消対象にする。
+    /// * `desc` - trueの場合注文日時が新しい注文から取り消しする。falseの場合古い注文から取り消しする。指定されない場合falseとする。
+    ///
+    pub async fn cancel_bulk_order_with_options(
+        &self,
+        symbols: &[&Symbol],
+        side: Option<&Side>,
+        settle_type: Option<&SettleType>,
+        desc: Option<bool>,
+    ) -> Result<RestResponse<CancelBulkOrder>, Error> {
+        let response = match desc {
+            Some(d) => {
+                request_cancel_bulk_order(&self.http_client, &symbols, side, settle_type, d).await?
+            }
+            None => {
+                request_cancel_bulk_order(&self.http_client, &symbols, side, settle_type, false)
+                    .await?
+            }
+        };
         Ok(response)
     }
 }
