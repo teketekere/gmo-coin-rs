@@ -14,7 +14,7 @@ use serde_json::{json, Value};
 /// 注文の複数キャンセルAPIのパス。
 const CANCEL_ORDERS_API_PATH: &str = "/v1/cancelOrders";
 
-/// 資産残高APIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
+/// 注文の複数キャンセルAPIから返ってくるレスポンスのうち`data`の部分を格納する構造体。
 #[derive(Deserialize)]
 pub struct Data {
     /// キャンセルに失敗した注文Idの配列。
