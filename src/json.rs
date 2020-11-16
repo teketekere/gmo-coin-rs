@@ -49,6 +49,27 @@ pub(crate) fn id_to_num(id: &str) -> Result<i32, Error> {
     })
 }
 
+/// 複数のIdが格納された配列を要素が文字列となるようにに変換する。
+pub(crate) fn ids_to_strvec<'de, D: Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Vec<String>, D::Error> {
+    let mut strvec = Vec::<String>::new();
+    match Value::deserialize(deserializer)? {
+        Value::Array(array) => {
+            for v in array {
+                let id = match v {
+                    Value::String(s) => s,
+                    Value::Number(n) => n.to_string(),
+                    _ => return Err(de::Error::custom("wrong type")),
+                };
+                strvec.push(id);
+            }
+        }
+        _ => return Err(de::Error::custom("wrong type")),
+    }
+    Ok(strvec)
+}
+
 /// GMOコインAPIから返ってくるタイムスタンプをchronoの日時に変換する。
 /// GMOコインのタイムスタンプはUTC。この関数でもUTCの日時を返す。
 pub(crate) fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(

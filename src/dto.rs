@@ -208,6 +208,20 @@ pub struct Pagination {
     pub count: i64,
 }
 
+/// キャンセルに失敗した注文を格納する構造体。
+#[derive(Deserialize)]
+pub struct CancelFailedOrder {
+    /// エラーコード。
+    pub message_code: String,
+
+    /// エラーメッセージ。
+    pub message_string: String,
+
+    /// 注文Id。
+    #[serde(deserialize_with = "id_to_str", rename = "orderId")]
+    pub order_id: String,
+}
+
 /// 取得対象ページのデフォルト値。APIを呼び出すとき、数値が指定されない場合はこの値を用いる。
 pub(crate) const DEFAULT_PAGE: i32 = 1;
 
