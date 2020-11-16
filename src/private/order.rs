@@ -226,7 +226,7 @@ mod tests {
         };
         let resp = request_order(
             &http_client,
-            &ExecutionType::Limit,
+            &ExecutionType::Stop,
             &Symbol::BtcJpy,
             &Side::Buy,
             0.1,
