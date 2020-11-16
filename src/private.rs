@@ -2,6 +2,7 @@
 
 pub mod active_orders;
 pub mod assets;
+pub mod change_order;
 pub mod executions;
 pub mod latest_executions;
 pub mod margin;
@@ -16,6 +17,7 @@ use crate::execution_type::ExecutionType;
 use crate::http_client::HttpClient;
 use crate::private::active_orders::{request_active_orders, ActiveOrders};
 use crate::private::assets::{request_assets, Assets};
+use crate::private::change_order::{request_change_order, ChangeOrder};
 use crate::private::executions::{
     request_executions_with_execution_id, request_executions_with_order_id, Executions,
 };
@@ -395,6 +397,41 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
             Some(losscut_price),
         )
         .await?;
+        Ok(response)
+    }
+
+    /// 注文変更APIを呼び出す。ロスカットレートは指定しない。
+    ///
+    /// # Arguments
+    ///
+    /// * `order_id` - 変更する注文の注文ID。
+    /// * `price` - 注文価格。
+    ///
+    pub async fn change_order(
+        &self,
+        order_id: &str,
+        price: i64,
+    ) -> Result<RestResponse<ChangeOrder>, Error> {
+        let response = request_change_order(&self.http_client, &order_id, price, None).await?;
+        Ok(response)
+    }
+
+    /// 注文変更APIをオプション引数つきで呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `order_id` - 変更する注文の注文ID。
+    /// * `price` - 注文価格。
+    /// * `losscut_price` - ロスカットレート。
+    ///
+    pub async fn change_order_with_options(
+        &self,
+        order_id: &str,
+        price: i64,
+        losscut_price: i64,
+    ) -> Result<RestResponse<ChangeOrder>, Error> {
+        let response =
+            request_change_order(&self.http_client, &order_id, price, Some(losscut_price)).await?;
         Ok(response)
     }
 }

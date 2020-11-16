@@ -83,3 +83,7 @@ path = "examples/private/limit_order.rs"
 [[example]]
 name = "stop_order"
 path = "examples/private/stop_order.rs"
+
+[[example]]
+name = "change_order"
+path = "examples/private/change_order.rs"
