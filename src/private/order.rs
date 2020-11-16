@@ -48,8 +48,8 @@ fn build_parameters(
     time_in_force: &TimeInForce,
     price: Option<i64>,
     losscut_price: Option<i64>,
-) -> Value {
-    match execution_type {
+) -> Result<Value, Error> {
+    Ok(match execution_type {
         ExecutionType::Market => {
             build_market_parameters(&execution_type, &symbol, &side, size, &time_in_force)
         }
@@ -63,9 +63,9 @@ fn build_parameters(
                 p,
                 losscut_price,
             ),
-            None => panic!("limit/stop order need price"),
+            None => return Err(Error::PriceNotSpecifiedError()),
         },
-    }
+    })
 }
 
 fn build_market_parameters(
@@ -134,7 +134,7 @@ pub async fn request_order(
         &time_in_force,
         price,
         losscut_price,
-    );
+    )?;
     let headers = Headers::create_post_headers(&ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<Order>(&response)

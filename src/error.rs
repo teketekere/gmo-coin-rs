@@ -27,6 +27,9 @@ pub enum Error {
     #[error("IDを文字列から数値に変換できなかった")]
     IdToNumberError(String),
 
+    #[error("指値/逆指値注文で価格が指定されていない")]
+    PriceNotSpecifiedError(),
+
     #[error("デバッグ用")]
     UnknownError,
 }
