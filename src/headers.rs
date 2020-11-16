@@ -24,7 +24,7 @@ impl<'a> IntoIterator for &'a Headers {
 
 impl Headers {
     /// 空のヘッダーを作る。
-    pub fn create_empty_headers() -> Headers {
+    pub(crate) fn create_empty_headers() -> Headers {
         let headers: HashMap<String, String> = HashMap::new();
         Headers(headers)
     }
@@ -45,7 +45,7 @@ impl Headers {
     }
 
     /// GETリクエスト時のヘッダーを作る。
-    pub fn create_get_headers(path: &str) -> Result<Headers, Error> {
+    pub(crate) fn create_get_headers(path: &str) -> Result<Headers, Error> {
         let timestamp = get_timestamp();
         let text = format!("{}{}{}", timestamp, "GET", path);
         let api_key = Headers::api_key()?;
@@ -59,7 +59,7 @@ impl Headers {
     }
 
     /// POSTリクエスト時のヘッダーを作る。
-    pub fn create_post_headers(path: &str, parameters: &Value) -> Result<Headers, Error> {
+    pub(crate) fn create_post_headers(path: &str, parameters: &Value) -> Result<Headers, Error> {
         let timestamp = get_timestamp();
         let text = format!("{}{}{}{}", timestamp, "POST", path, &parameters);
         let api_key = Headers::api_key()?;

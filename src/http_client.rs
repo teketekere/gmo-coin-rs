@@ -58,14 +58,14 @@ impl HttpClient for Reqwest {
 }
 
 #[cfg(test)]
-pub mod tests {
+pub(crate) mod tests {
     use super::*;
 
     /// 単体テスト用のHttpクライアント。
-    pub struct InmemClient {
-        pub http_status_code: u16,
-        pub body_text: String,
-        pub return_error: bool,
+    pub(crate) struct InmemClient {
+        pub(crate) http_status_code: u16,
+        pub(crate) body_text: String,
+        pub(crate) return_error: bool,
     }
 
     impl InmemClient {

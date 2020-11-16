@@ -7,7 +7,7 @@ use serde::{de, Deserialize, Deserializer};
 use serde_json::Value;
 
 /// strからf64への変換を行う。
-pub fn str_to_f64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<f64, D::Error> {
+pub(crate) fn str_to_f64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<f64, D::Error> {
     Ok(match Value::deserialize(deserializer)? {
         Value::String(s) => s.parse().map_err(de::Error::custom)?,
         Value::Number(num) => {
@@ -19,7 +19,7 @@ pub fn str_to_f64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<f64, D::
 }
 
 /// strからi64への変換を行う。
-pub fn str_to_i64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::Error> {
+pub(crate) fn str_to_i64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::Error> {
     Ok(match Value::deserialize(deserializer)? {
         Value::String(s) => s.parse().map_err(de::Error::custom)?,
         Value::Number(num) => {
@@ -33,7 +33,7 @@ pub fn str_to_i64<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::
 /// Id(注文Idや約定Id)を文字列に変換する。
 /// GMOコインのお知らせを見るとIdは2020年11月4日から文字列になると書いてあるが、2020年11月14日現在数値で返ってくる。
 /// 将来的に文字列に変更されてもいいように、数値でも文字列でも文字列に直すようにしておく。
-pub fn id_to_str<'de, D: Deserializer<'de>>(deserializer: D) -> Result<String, D::Error> {
+pub(crate) fn id_to_str<'de, D: Deserializer<'de>>(deserializer: D) -> Result<String, D::Error> {
     Ok(match Value::deserialize(deserializer)? {
         Value::String(s) => s,
         Value::Number(num) => num.to_string(),
@@ -43,7 +43,7 @@ pub fn id_to_str<'de, D: Deserializer<'de>>(deserializer: D) -> Result<String, D
 
 /// GMOコインAPIから返ってくるタイムスタンプをchronoの日時に変換する。
 /// GMOコインのタイムスタンプはUTC。この関数でもUTCの日時を返す。
-pub fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(
+pub(crate) fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(
     deserializer: D,
 ) -> Result<DateTime<Utc>, D::Error> {
     let s: String = Deserialize::deserialize(deserializer)?;
@@ -56,7 +56,7 @@ pub fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(
 }
 
 /// GMOコインのAPIを呼び出して得られるHTTPレスポンスをええ感じに構造体RestResponse<T>に詰めなおす
-pub fn parse_from_http_response<'a, T>(
+pub(crate) fn parse_from_http_response<'a, T>(
     http_response: &'a RawResponse,
 ) -> Result<RestResponse<T>, Error>
 where
