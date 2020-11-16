@@ -41,6 +41,14 @@ pub(crate) fn id_to_str<'de, D: Deserializer<'de>>(deserializer: D) -> Result<St
     })
 }
 
+/// Idを数値に変換する。
+pub(crate) fn id_to_num(id: &str) -> Result<i32, Error> {
+    Ok(match id.parse::<i32>() {
+        Ok(n) => n,
+        Err(_) => return Err(Error::IdToNumberError(id.to_string())),
+    })
+}
+
 /// GMOコインAPIから返ってくるタイムスタンプをchronoの日時に変換する。
 /// GMOコインのタイムスタンプはUTC。この関数でもUTCの日時を返す。
 pub(crate) fn gmo_timestamp_to_chrono_timestamp<'de, D: Deserializer<'de>>(

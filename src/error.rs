@@ -24,6 +24,9 @@ pub enum Error {
     #[error("環境変数を読み取れなかった")]
     EnvVarError(std::env::VarError),
 
+    #[error("IDを文字列から数値に変換できなかった")]
+    IdToNumberError(String),
+
     #[error("デバッグ用")]
     UnknownError,
 }

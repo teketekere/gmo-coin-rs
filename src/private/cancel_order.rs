@@ -24,8 +24,9 @@ pub struct CancelOrder {
     pub responsetime: DateTime<Utc>,
 }
 
-fn build_parameters(order_id: &str) -> Value {
-    json!({"orderId": order_id.to_string(),})
+fn build_parameters(order_id: &str) -> Result<Value, Error> {
+    let order_id_num = id_to_num(&order_id)?;
+    Ok(json!({"orderId": order_id_num,}))
 }
 
 /// 注文キャンセルAPIを呼び出す。
@@ -34,7 +35,7 @@ pub async fn request_cancel_order(
     order_id: &str,
 ) -> Result<RestResponse<CancelOrder>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CANCEL_ORDER_API_PATH,);
-    let parameters = build_parameters(order_id);
+    let parameters = build_parameters(order_id)?;
     let headers = Headers::create_post_headers(&CANCEL_ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<CancelOrder>(&response)
@@ -61,7 +62,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_cancel_order(&http_client, "orderid").await.unwrap();
+        let resp = request_cancel_order(&http_client, "200").await.unwrap();
         assert_eq!(resp.http_status_code, 200);
         assert_eq!(resp.body.status, 0);
         assert_eq!(

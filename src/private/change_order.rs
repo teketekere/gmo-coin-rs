@@ -24,18 +24,23 @@ pub struct ChangeOrder {
     pub responsetime: DateTime<Utc>,
 }
 
-fn build_parameters(order_id: &str, price: i64, losscut_price: Option<i64>) -> Value {
-    match losscut_price {
+fn build_parameters(
+    order_id: &str,
+    price: i64,
+    losscut_price: Option<i64>,
+) -> Result<Value, Error> {
+    let order_id_num = id_to_num(&order_id)?;
+    Ok(match losscut_price {
         Some(lp) => json!({
-            "orderId": order_id.to_string(),
+            "orderId": order_id_num,
             "price": price.to_string(),
             "losscutPrice": lp.to_string(),
         }),
         None => json!({
-            "orderId": order_id.to_string(),
+            "orderId": order_id_num,
             "price": price.to_string(),
         }),
-    }
+    })
 }
 
 /// 注文変更APIを呼び出す。
@@ -46,7 +51,7 @@ pub async fn request_change_order(
     losscut_price: Option<i64>,
 ) -> Result<RestResponse<ChangeOrder>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CHANGE_ORDER_API_PATH,);
-    let parameters = build_parameters(order_id, price, losscut_price);
+    let parameters = build_parameters(order_id, price, losscut_price)?;
     let headers = Headers::create_post_headers(&CHANGE_ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<ChangeOrder>(&response)
@@ -73,7 +78,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_change_order(&http_client, "orderid", 100, None)
+        let resp = request_change_order(&http_client, "200", 100, None)
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);
