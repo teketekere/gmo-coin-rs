@@ -2,6 +2,7 @@
 
 pub mod active_orders;
 pub mod assets;
+pub mod cancel_order;
 pub mod change_order;
 pub mod executions;
 pub mod latest_executions;
@@ -17,6 +18,7 @@ use crate::execution_type::ExecutionType;
 use crate::http_client::HttpClient;
 use crate::private::active_orders::{request_active_orders, ActiveOrders};
 use crate::private::assets::{request_assets, Assets};
+use crate::private::cancel_order::{request_cancel_order, CancelOrder};
 use crate::private::change_order::{request_change_order, ChangeOrder};
 use crate::private::executions::{
     request_executions_with_execution_id, request_executions_with_order_id, Executions,
@@ -432,6 +434,17 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<ChangeOrder>, Error> {
         let response =
             request_change_order(&self.http_client, &order_id, price, Some(losscut_price)).await?;
+        Ok(response)
+    }
+
+    /// 注文キャンセルAPIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `order_id` - 注文ID。
+    ///
+    pub async fn cancel_order(&self, order_id: &str) -> Result<RestResponse<CancelOrder>, Error> {
+        let response = request_cancel_order(&self.http_client, &order_id).await?;
         Ok(response)
     }
 }

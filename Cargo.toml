@@ -87,3 +87,7 @@ path = "examples/private/stop_order.rs"
 [[example]]
 name = "change_order"
 path = "examples/private/change_order.rs"
+
+[[example]]
+name = "cancel_order"
+path = "examples/private/cancel_order.rs"
