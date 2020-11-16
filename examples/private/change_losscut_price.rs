@@ -24,7 +24,9 @@ async fn main() -> Result<(), Error> {
 
     let http_client = Reqwest;
     let private_api = PrivateAPI::<Reqwest> { http_client };
-    let response = private_api.change_losscut_price(&position_id, losscut_price).await?;
+    let response = private_api
+        .change_losscut_price(&position_id, losscut_price)
+        .await?;
 
     println!("HTTPステータスコード: {}", response.http_status_code);
     println!("ステータスコード: {}", response.body.status);
