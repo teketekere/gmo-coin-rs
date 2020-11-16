@@ -221,187 +221,73 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         Ok(response)
     }
 
-    /// 新規成行注文APIを呼び出す。執行数量条件はFAK。
+    /// 新規注文APIを呼び出す。
     ///
     /// # Arguments
     ///
+    /// * `execution_type` - 注文方法。
     /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
+    /// * `price` - 注文価格。Marketの場合は不要。
     ///
-    pub async fn market_order(
+    pub async fn order(
         &self,
+        execution_type: &ExecutionType,
         symbol: &Symbol,
         side: &Side,
         size: f64,
+        price: Option<i64>,
     ) -> Result<RestResponse<Order>, Error> {
+        let time_in_force = match execution_type {
+            ExecutionType::Limit => TimeInForce::Fas,
+            _ => TimeInForce::Fak,
+        };
         let response = request_order(
             &self.http_client,
-            &ExecutionType::Market,
-            &symbol,
-            &side,
-            size,
-            &TimeInForce::Fak,
-            None,
-            None,
-        )
-        .await?;
-        Ok(response)
-    }
-
-    /// 新規成行注文APIをオプション引数付きで呼び出す。
-    ///
-    /// # Arguments
-    ///
-    /// * `symbol` - 銘柄。
-    /// * `side` - 売買区分。
-    /// * `size` - 注文数量。
-    /// * `time_in_force` - 執行数量条件。
-    ///
-    pub async fn market_order_with_options(
-        &self,
-        symbol: &Symbol,
-        side: &Side,
-        size: f64,
-        time_in_force: &TimeInForce,
-    ) -> Result<RestResponse<Order>, Error> {
-        let response = request_order(
-            &self.http_client,
-            &ExecutionType::Market,
+            &execution_type,
             &symbol,
             &side,
             size,
             &time_in_force,
-            None,
-            None,
-        )
-        .await?;
-        Ok(response)
-    }
-
-    /// 新規指値注文APIを呼び出す。執行数量条件はFAS、ロスカットレートは指定なし。
-    ///
-    /// # Arguments
-    ///
-    /// * `symbol` - 銘柄。
-    /// * `side` - 売買区分。
-    /// * `size` - 注文数量。
-    /// * `price` - 注文価格。
-    ///
-    pub async fn limit_order(
-        &self,
-        symbol: &Symbol,
-        side: &Side,
-        size: f64,
-        price: i64,
-    ) -> Result<RestResponse<Order>, Error> {
-        let response = request_order(
-            &self.http_client,
-            &ExecutionType::Limit,
-            &symbol,
-            &side,
-            size,
-            &TimeInForce::Fas,
-            Some(price),
+            price,
             None,
         )
         .await?;
         Ok(response)
     }
 
-    /// 新規指値注文APIをオプション引数つきで呼び出す。
+    /// 新規注文APIをオプション引数付きで呼び出す。
     ///
     /// # Arguments
     ///
+    /// * `execution_type` - 注文方法。
     /// * `symbol` - 銘柄。
     /// * `side` - 売買区分。
     /// * `size` - 注文数量。
-    /// * `price` - 注文価格。
+    /// * `price` - 注文価格。Marketの場合は不要。
     /// * `time_in_force` - 執行数量条件。
     /// * `losscut_price` - ロスカットレート。
     ///
-    pub async fn limit_order_with_options(
+    pub async fn order_with_options(
         &self,
+        execution_type: &ExecutionType,
         symbol: &Symbol,
         side: &Side,
         size: f64,
-        price: i64,
+        price: Option<i64>,
         time_in_force: &TimeInForce,
-        losscut_price: i64,
+        losscut_price: Option<i64>,
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &ExecutionType::Limit,
+            &execution_type,
             &symbol,
             &side,
             size,
             &time_in_force,
-            Some(price),
-            Some(losscut_price),
-        )
-        .await?;
-        Ok(response)
-    }
-
-    /// 新規逆指値注文APIを呼び出す。執行数量条件はFAK、ロスカットレートは指定なし。
-    ///
-    /// # Arguments
-    ///
-    /// * `symbol` - 銘柄。
-    /// * `side` - 売買区分。
-    /// * `size` - 注文数量。
-    /// * `price` - 注文価格。
-    ///
-    pub async fn stop_order(
-        &self,
-        symbol: &Symbol,
-        side: &Side,
-        size: f64,
-        price: i64,
-    ) -> Result<RestResponse<Order>, Error> {
-        let response = request_order(
-            &self.http_client,
-            &ExecutionType::Stop,
-            &symbol,
-            &side,
-            size,
-            &TimeInForce::Fak,
-            Some(price),
-            None,
-        )
-        .await?;
-        Ok(response)
-    }
-
-    /// 新規逆指値注文APIをオプション引数つきで呼び出す。
-    ///
-    /// # Arguments
-    ///
-    /// * `symbol` - 銘柄。
-    /// * `side` - 売買区分。
-    /// * `size` - 注文数量。
-    /// * `price` - 注文価格。
-    /// * `time_in_force` - 執行数量条件。
-    /// * `losscut_price` - ロスカットレート。
-    ///
-    pub async fn stop_order_with_options(
-        &self,
-        symbol: &Symbol,
-        side: &Side,
-        size: f64,
-        price: i64,
-        time_in_force: &TimeInForce,
-        losscut_price: i64,
-    ) -> Result<RestResponse<Order>, Error> {
-        let response = request_order(
-            &self.http_client,
-            &ExecutionType::Stop,
-            &symbol,
-            &side,
-            size,
-            &time_in_force,
-            Some(price),
-            Some(losscut_price),
+            price,
+            losscut_price,
         )
         .await?;
         Ok(response)
