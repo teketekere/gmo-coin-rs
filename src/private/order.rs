@@ -19,7 +19,7 @@ use serde_json::{json, Value};
 /// 新規注文APIのパス。
 const ORDER_API_PATH: &str = "/v1/order";
 
-/// 注文情報取得APIから返ってくるレスポンスを格納する構造体。
+/// 新規注文APIから返ってくるレスポンスを格納する構造体。
 #[derive(Deserialize)]
 pub struct Order {
     /// ステータスコード。
