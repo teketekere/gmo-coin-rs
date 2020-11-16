@@ -11,7 +11,7 @@ pub enum Symbol {
     EthJpy,
     BchJpy,
     LtcJpy,
-    XprJpy,
+    XrpJpy,
 }
 
 /// ビットコイン（現物取引）の銘柄名
@@ -57,7 +57,7 @@ impl Symbol {
             Symbol::EthJpy => ETH_JPY,
             Symbol::BchJpy => BCH_JPY,
             Symbol::LtcJpy => LTC_JPY,
-            Symbol::XprJpy => XRP_JPY,
+            Symbol::XrpJpy => XRP_JPY,
         }
     }
 }
