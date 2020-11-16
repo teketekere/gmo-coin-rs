@@ -1,11 +1,14 @@
 //! Private APIを実装する。
 
+#![allow(clippy::too_many_arguments)]
+
 pub mod active_orders;
 pub mod assets;
 pub mod cancel_bulk_order;
 pub mod cancel_order;
 pub mod cancel_orders;
 pub mod change_order;
+pub mod close_order;
 pub mod executions;
 pub mod latest_executions;
 pub mod margin;
@@ -24,6 +27,7 @@ use crate::private::cancel_bulk_order::{request_cancel_bulk_order, CancelBulkOrd
 use crate::private::cancel_order::{request_cancel_order, CancelOrder};
 use crate::private::cancel_orders::{request_cancel_orders, CancelOrders};
 use crate::private::change_order::{request_change_order, ChangeOrder};
+use crate::private::close_order::{request_close_order, CloseOrder};
 use crate::private::executions::{
     request_executions_with_execution_id, request_executions_with_order_id, Executions,
 };
@@ -393,6 +397,80 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
                     .await?
             }
         };
+        Ok(response)
+    }
+
+    /// 決済注文APIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `execution_type` - 注文方法。
+    /// * `symbol` - 銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。Marketの場合は不要。
+    /// * `positon_id` - 建玉ID。
+    ///
+    pub async fn close_order(
+        &self,
+        execution_type: &ExecutionType,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: Option<i64>,
+        position_id: &str,
+    ) -> Result<RestResponse<CloseOrder>, Error> {
+        let time_in_force = match execution_type {
+            ExecutionType::Limit => TimeInForce::Fas,
+            _ => TimeInForce::Fak,
+        };
+        let response = request_close_order(
+            &self.http_client,
+            &execution_type,
+            &symbol,
+            &side,
+            size,
+            price,
+            &position_id,
+            &time_in_force,
+        )
+        .await?;
+        Ok(response)
+    }
+
+    /// 決済注文APIを呼び出す。
+    ///
+    /// # Arguments
+    ///
+    /// * `execution_type` - 注文方法。
+    /// * `symbol` - 銘柄。
+    /// * `side` - 売買区分。
+    /// * `size` - 注文数量。
+    /// * `price` - 注文価格。Marketの場合は不要。
+    /// * `positon_id` - 建玉ID。
+    /// * `time_in_force` - 執行数量条件。
+    ///
+    pub async fn close_order_with_options(
+        &self,
+        execution_type: &ExecutionType,
+        symbol: &Symbol,
+        side: &Side,
+        size: f64,
+        price: Option<i64>,
+        position_id: &str,
+        time_in_force: &TimeInForce,
+    ) -> Result<RestResponse<CloseOrder>, Error> {
+        let response = request_close_order(
+            &self.http_client,
+            &execution_type,
+            &symbol,
+            &side,
+            size,
+            price,
+            &position_id,
+            &time_in_force,
+        )
+        .await?;
         Ok(response)
     }
 }

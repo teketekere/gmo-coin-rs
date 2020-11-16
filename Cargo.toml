@@ -100,3 +100,6 @@ path = "examples/private/cancel_orders.rs"
 name = "cancel_bulk_order"
 path = "examples/private/cancel_bulk_order.rs"
 
+[[example]]
+name = "close_order"
+path = "examples/private/close_order.rs"
