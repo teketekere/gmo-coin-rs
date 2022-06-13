@@ -25,7 +25,7 @@ pub struct CancelOrder {
 }
 
 fn build_parameters(order_id: &str) -> Result<Value, Error> {
-    let order_id_num = id_to_num(&order_id)?;
+    let order_id_num = id_to_num(order_id)?;
     Ok(json!({"orderId": order_id_num,}))
 }
 
@@ -36,7 +36,7 @@ pub async fn request_cancel_order(
 ) -> Result<RestResponse<CancelOrder>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CANCEL_ORDER_API_PATH,);
     let parameters = build_parameters(order_id)?;
-    let headers = Headers::create_post_headers(&CANCEL_ORDER_API_PATH, &parameters)?;
+    let headers = Headers::create_post_headers(CANCEL_ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<CancelOrder>(&response)
 }

@@ -37,7 +37,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     /// * `symbol` - 銘柄
     ///
     pub async fn ticker(&self, symbol: &Symbol) -> Result<RestResponse<Ticker>, Error> {
-        let response = request_ticker(&self.http_client, &symbol).await?;
+        let response = request_ticker(&self.http_client, symbol).await?;
         Ok(response)
     }
 
@@ -48,7 +48,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     /// * `symbol` - 銘柄
     ///
     pub async fn orderbooks(&self, symbol: &Symbol) -> Result<RestResponse<Orderbooks>, Error> {
-        let response = request_orderbooks(&self.http_client, &symbol).await?;
+        let response = request_orderbooks(&self.http_client, symbol).await?;
         Ok(response)
     }
 
@@ -60,7 +60,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
     ///
     pub async fn trades(&self, symbol: &Symbol) -> Result<RestResponse<Trades>, Error> {
         let response =
-            request_trades(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
+            request_trades(&self.http_client, symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
         Ok(response)
     }
 
@@ -78,7 +78,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PublicAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<Trades>, Error> {
-        let response = request_trades(&self.http_client, &symbol, page, count).await?;
+        let response = request_trades(&self.http_client, symbol, page, count).await?;
         Ok(response)
     }
 }

@@ -51,7 +51,7 @@ pub async fn request_executions_with_order_id(
         "{}{}?orderId={}",
         PRIVATE_ENDPOINT, EXECUTIONS_API_PATH, order_id,
     );
-    let headers = Headers::create_get_headers(&EXECUTIONS_API_PATH)?;
+    let headers = Headers::create_get_headers(EXECUTIONS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Executions>(&response)
 }
@@ -65,7 +65,7 @@ pub async fn request_executions_with_execution_id(
         "{}{}?executionId={}",
         PRIVATE_ENDPOINT, EXECUTIONS_API_PATH, execution_id,
     );
-    let headers = Headers::create_get_headers(&EXECUTIONS_API_PATH)?;
+    let headers = Headers::create_get_headers(EXECUTIONS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Executions>(&response)
 }

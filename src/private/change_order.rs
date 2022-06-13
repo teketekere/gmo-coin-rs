@@ -29,7 +29,7 @@ fn build_parameters(
     price: i64,
     losscut_price: Option<i64>,
 ) -> Result<Value, Error> {
-    let order_id_num = id_to_num(&order_id)?;
+    let order_id_num = id_to_num(order_id)?;
     Ok(match losscut_price {
         Some(lp) => json!({
             "orderId": order_id_num,
@@ -52,7 +52,7 @@ pub async fn request_change_order(
 ) -> Result<RestResponse<ChangeOrder>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CHANGE_ORDER_API_PATH,);
     let parameters = build_parameters(order_id, price, losscut_price)?;
-    let headers = Headers::create_post_headers(&CHANGE_ORDER_API_PATH, &parameters)?;
+    let headers = Headers::create_post_headers(CHANGE_ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<ChangeOrder>(&response)
 }

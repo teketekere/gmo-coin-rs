@@ -86,8 +86,8 @@ pub async fn request_cancel_bulk_order(
     desc: bool,
 ) -> Result<RestResponse<CancelBulkOrder>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CANCEL_BULK_ORDERS_API_PATH,);
-    let parameters = build_parameters(&symbols, side, settle_type, desc)?;
-    let headers = Headers::create_post_headers(&CANCEL_BULK_ORDERS_API_PATH, &parameters)?;
+    let parameters = build_parameters(symbols, side, settle_type, desc)?;
+    let headers = Headers::create_post_headers(CANCEL_BULK_ORDERS_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<CancelBulkOrder>(&response)
 }
@@ -116,7 +116,7 @@ mod tests {
         };
         let resp = request_cancel_bulk_order(
             &http_client,
-            &vec![&Symbol::Btc, &Symbol::EthJpy],
+            &[&Symbol::Btc, &Symbol::EthJpy],
             Some(&Side::Sell),
             None,
             false,

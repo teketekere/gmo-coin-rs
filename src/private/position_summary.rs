@@ -54,7 +54,7 @@ pub async fn request_position_summary(
         POSITION_SUMMARY_API_PATH,
         symbol.to_string(),
     );
-    let headers = Headers::create_get_headers(&POSITION_SUMMARY_API_PATH)?;
+    let headers = Headers::create_get_headers(POSITION_SUMMARY_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<PositionSummary>(&response)
 }

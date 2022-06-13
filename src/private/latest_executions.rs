@@ -72,7 +72,7 @@ pub async fn request_latest_executions(
         page,
         count
     );
-    let headers = Headers::create_get_headers(&LATEST_EXECUTIONS_API_PATH)?;
+    let headers = Headers::create_get_headers(LATEST_EXECUTIONS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<LatestExecutions>(&response)
 }

@@ -69,8 +69,8 @@ pub async fn request_cancel_orders(
     order_ids: &[&str],
 ) -> Result<RestResponse<CancelOrders>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CANCEL_ORDERS_API_PATH,);
-    let parameters = build_parameters(&order_ids)?;
-    let headers = Headers::create_post_headers(&CANCEL_ORDERS_API_PATH, &parameters)?;
+    let parameters = build_parameters(order_ids)?;
+    let headers = Headers::create_post_headers(CANCEL_ORDERS_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<CancelOrders>(&response)
 }
@@ -111,7 +111,7 @@ mod tests {
             body_text: body.to_string(),
             return_error: false,
         };
-        let resp = request_cancel_orders(&http_client, &vec!["1", "2", "3", "4"])
+        let resp = request_cancel_orders(&http_client, &["1", "2", "3", "4"])
             .await
             .unwrap();
         assert_eq!(resp.http_status_code, 200);

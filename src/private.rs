@@ -87,7 +87,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     /// * `order_ids` - 取得する注文の注文ID。最大10件まで指定できる。
     ///
     pub async fn orders(&self, order_ids: &[&str]) -> Result<RestResponse<Orders>, Error> {
-        let response = request_orders(&self.http_client, &order_ids).await?;
+        let response = request_orders(&self.http_client, order_ids).await?;
         Ok(response)
     }
 
@@ -102,7 +102,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         symbol: &Symbol,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
         let response =
-            request_active_orders(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
+            request_active_orders(&self.http_client, symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
         Ok(response)
     }
 
@@ -120,7 +120,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<ActiveOrders>, Error> {
-        let response = request_active_orders(&self.http_client, &symbol, page, count).await?;
+        let response = request_active_orders(&self.http_client, symbol, page, count).await?;
         Ok(response)
     }
 
@@ -134,7 +134,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         &self,
         order_id: &str,
     ) -> Result<RestResponse<Executions>, Error> {
-        let response = request_executions_with_order_id(&self.http_client, &order_id).await?;
+        let response = request_executions_with_order_id(&self.http_client, order_id).await?;
         Ok(response)
     }
 
@@ -149,7 +149,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         execution_id: &str,
     ) -> Result<RestResponse<Executions>, Error> {
         let response =
-            request_executions_with_execution_id(&self.http_client, &execution_id).await?;
+            request_executions_with_execution_id(&self.http_client, execution_id).await?;
         Ok(response)
     }
 
@@ -164,7 +164,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         symbol: &Symbol,
     ) -> Result<RestResponse<LatestExecutions>, Error> {
         let response =
-            request_latest_executions(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT)
+            request_latest_executions(&self.http_client, symbol, DEFAULT_PAGE, DEFAULT_COUNT)
                 .await?;
         Ok(response)
     }
@@ -183,7 +183,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<LatestExecutions>, Error> {
-        let response = request_latest_executions(&self.http_client, &symbol, page, count).await?;
+        let response = request_latest_executions(&self.http_client, symbol, page, count).await?;
         Ok(response)
     }
 
@@ -200,7 +200,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         symbol: &Symbol,
     ) -> Result<RestResponse<OpenPositions>, Error> {
         let response =
-            request_open_positions(&self.http_client, &symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
+            request_open_positions(&self.http_client, symbol, DEFAULT_PAGE, DEFAULT_COUNT).await?;
         Ok(response)
     }
 
@@ -218,7 +218,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         page: i32,
         count: i32,
     ) -> Result<RestResponse<OpenPositions>, Error> {
-        let response = request_open_positions(&self.http_client, &symbol, page, count).await?;
+        let response = request_open_positions(&self.http_client, symbol, page, count).await?;
         Ok(response)
     }
 
@@ -232,7 +232,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         &self,
         symbol: &Symbol,
     ) -> Result<RestResponse<PositionSummary>, Error> {
-        let response = request_position_summary(&self.http_client, &symbol).await?;
+        let response = request_position_summary(&self.http_client, symbol).await?;
         Ok(response)
     }
 
@@ -254,12 +254,12 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         size: f64,
         price: Option<i64>,
     ) -> Result<RestResponse<Order>, Error> {
-        let time_in_force = get_default_time_in_force(&execution_type);
+        let time_in_force = get_default_time_in_force(execution_type);
         let response = request_order(
             &self.http_client,
-            &execution_type,
-            &symbol,
-            &side,
+            execution_type,
+            symbol,
+            side,
             size,
             &time_in_force,
             price,
@@ -293,11 +293,11 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<Order>, Error> {
         let response = request_order(
             &self.http_client,
-            &execution_type,
-            &symbol,
-            &side,
+            execution_type,
+            symbol,
+            side,
             size,
-            &time_in_force,
+            time_in_force,
             price,
             losscut_price,
         )
@@ -317,7 +317,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         order_id: &str,
         price: i64,
     ) -> Result<RestResponse<ChangeOrder>, Error> {
-        let response = request_change_order(&self.http_client, &order_id, price, None).await?;
+        let response = request_change_order(&self.http_client, order_id, price, None).await?;
         Ok(response)
     }
 
@@ -336,7 +336,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         losscut_price: i64,
     ) -> Result<RestResponse<ChangeOrder>, Error> {
         let response =
-            request_change_order(&self.http_client, &order_id, price, Some(losscut_price)).await?;
+            request_change_order(&self.http_client, order_id, price, Some(losscut_price)).await?;
         Ok(response)
     }
 
@@ -347,7 +347,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     /// * `order_id` - 注文ID。
     ///
     pub async fn cancel_order(&self, order_id: &str) -> Result<RestResponse<CancelOrder>, Error> {
-        let response = request_cancel_order(&self.http_client, &order_id).await?;
+        let response = request_cancel_order(&self.http_client, order_id).await?;
         Ok(response)
     }
 
@@ -361,7 +361,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         &self,
         order_ids: &[&str],
     ) -> Result<RestResponse<CancelOrders>, Error> {
-        let response = request_cancel_orders(&self.http_client, &order_ids).await?;
+        let response = request_cancel_orders(&self.http_client, order_ids).await?;
         Ok(response)
     }
 
@@ -376,7 +376,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         symbols: &[&Symbol],
     ) -> Result<RestResponse<CancelBulkOrder>, Error> {
         let response =
-            request_cancel_bulk_order(&self.http_client, &symbols, None, None, false).await?;
+            request_cancel_bulk_order(&self.http_client, symbols, None, None, false).await?;
         Ok(response)
     }
 
@@ -398,10 +398,10 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<CancelBulkOrder>, Error> {
         let response = match desc {
             Some(d) => {
-                request_cancel_bulk_order(&self.http_client, &symbols, side, settle_type, d).await?
+                request_cancel_bulk_order(&self.http_client, symbols, side, settle_type, d).await?
             }
             None => {
-                request_cancel_bulk_order(&self.http_client, &symbols, side, settle_type, false)
+                request_cancel_bulk_order(&self.http_client, symbols, side, settle_type, false)
                     .await?
             }
         };
@@ -428,15 +428,15 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         price: Option<i64>,
         position_id: &str,
     ) -> Result<RestResponse<CloseOrder>, Error> {
-        let time_in_force = get_default_time_in_force(&execution_type);
+        let time_in_force = get_default_time_in_force(execution_type);
         let response = request_close_order(
             &self.http_client,
-            &execution_type,
-            &symbol,
-            &side,
+            execution_type,
+            symbol,
+            side,
             size,
             price,
-            &position_id,
+            position_id,
             &time_in_force,
         )
         .await?;
@@ -467,13 +467,13 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<CloseOrder>, Error> {
         let response = request_close_order(
             &self.http_client,
-            &execution_type,
-            &symbol,
-            &side,
+            execution_type,
+            symbol,
+            side,
             size,
             price,
-            &position_id,
-            &time_in_force,
+            position_id,
+            time_in_force,
         )
         .await?;
         Ok(response)
@@ -497,12 +497,12 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         size: f64,
         price: Option<i64>,
     ) -> Result<RestResponse<CloseBulkOrder>, Error> {
-        let time_in_force = get_default_time_in_force(&execution_type);
+        let time_in_force = get_default_time_in_force(execution_type);
         let response = request_close_bulk_order(
             &self.http_client,
-            &execution_type,
-            &symbol,
-            &side,
+            execution_type,
+            symbol,
+            side,
             size,
             price,
             &time_in_force,
@@ -533,12 +533,12 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
     ) -> Result<RestResponse<CloseBulkOrder>, Error> {
         let response = request_close_bulk_order(
             &self.http_client,
-            &execution_type,
-            &symbol,
-            &side,
+            execution_type,
+            symbol,
+            side,
             size,
             price,
-            &time_in_force,
+            time_in_force,
         )
         .await?;
         Ok(response)
@@ -557,7 +557,7 @@ impl<T: HttpClient + std::marker::Sync + std::marker::Send> PrivateAPI<T> {
         losscut_price: i64,
     ) -> Result<RestResponse<ChangeLosscutPrice>, Error> {
         let response =
-            request_change_losscut_price(&self.http_client, &position_id, losscut_price).await?;
+            request_change_losscut_price(&self.http_client, position_id, losscut_price).await?;
         Ok(response)
     }
 }

@@ -38,8 +38,8 @@ pub async fn request_change_losscut_price(
     losscut_price: i64,
 ) -> Result<RestResponse<ChangeLosscutPrice>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CHANGE_LOSSCUT_PRICE_API_PATH,);
-    let parameters = build_parameters(&position_id, losscut_price);
-    let headers = Headers::create_post_headers(&CHANGE_LOSSCUT_PRICE_API_PATH, &parameters)?;
+    let parameters = build_parameters(position_id, losscut_price);
+    let headers = Headers::create_post_headers(CHANGE_LOSSCUT_PRICE_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<ChangeLosscutPrice>(&response)
 }

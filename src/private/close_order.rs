@@ -51,22 +51,22 @@ fn build_parameters(
 ) -> Result<Value, Error> {
     Ok(match execution_type {
         ExecutionType::Market => build_market_parameters(
-            &execution_type,
-            &symbol,
-            &side,
+            execution_type,
+            symbol,
+            side,
             size,
-            &position_id,
-            &time_in_force,
+            position_id,
+            time_in_force,
         )?,
         _ => match price {
             Some(p) => build_limit_or_stop_paramters(
-                &execution_type,
-                &symbol,
-                &side,
+                execution_type,
+                symbol,
+                side,
                 size,
                 p,
-                &position_id,
-                &time_in_force,
+                position_id,
+                time_in_force,
             )?,
             None => return Err(Error::PriceNotSpecifiedError()),
         },
@@ -88,7 +88,7 @@ fn build_market_parameters(
         "timeInForce": time_in_force.to_string(),
         "settlePosition": [
             {
-                "positionId": id_to_num(&position_id)?,
+                "positionId": id_to_num(position_id)?,
                 "size": size.to_string(),
             }
         ]
@@ -112,7 +112,7 @@ fn build_limit_or_stop_paramters(
         "price": price.to_string(),
         "settlePosition": [
             {
-                "positionId": id_to_num(&position_id)?,
+                "positionId": id_to_num(position_id)?,
                 "size": size.to_string(),
             }
         ]
@@ -132,15 +132,15 @@ pub async fn request_close_order(
 ) -> Result<RestResponse<CloseOrder>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CLOSE_ORDER_API_PATH,);
     let parameters = build_parameters(
-        &execution_type,
-        &symbol,
-        &side,
+        execution_type,
+        symbol,
+        side,
         size,
         price,
-        &position_id,
-        &time_in_force,
+        position_id,
+        time_in_force,
     )?;
-    let headers = Headers::create_post_headers(&CLOSE_ORDER_API_PATH, &parameters)?;
+    let headers = Headers::create_post_headers(CLOSE_ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<CloseOrder>(&response)
 }

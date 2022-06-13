@@ -128,7 +128,7 @@ mod tests {
     #[test]
     fn test_str_to_numbers() {
         let json_str = r#"{"i": "100", "f": "-10.55"}"#;
-        let json: Number = serde_json::from_str(&json_str).unwrap();
+        let json: Number = serde_json::from_str(json_str).unwrap();
         assert_eq!(json.i, 100);
         assert_eq!(json.f, -10.55);
     }
@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn test_str_to_datetime() {
         let json_str = r#"{"d": "2019-03-19T02:15:06.001Z"}"#;
-        let json: Date = serde_json::from_str(&json_str).unwrap();
+        let json: Date = serde_json::from_str(json_str).unwrap();
         assert_eq!(json.d.year(), 2019);
         assert_eq!(json.d.month(), 3);
         assert_eq!(json.d.day(), 19);
