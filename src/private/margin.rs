@@ -71,7 +71,7 @@ impl RestResponse<Margin> {
 /// 余力情報APIを呼び出す。
 pub async fn request_margin(http_client: &impl HttpClient) -> Result<RestResponse<Margin>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, MARGIN_API_PATH);
-    let headers = Headers::create_get_headers(&MARGIN_API_PATH)?;
+    let headers = Headers::create_get_headers(MARGIN_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Margin>(&response)
 }

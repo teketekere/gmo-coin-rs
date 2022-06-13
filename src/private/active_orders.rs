@@ -72,7 +72,7 @@ pub async fn request_active_orders(
         page,
         count,
     );
-    let headers = Headers::create_get_headers(&ACTIVE_ORDERS_API_PATH)?;
+    let headers = Headers::create_get_headers(ACTIVE_ORDERS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<ActiveOrders>(&response)
 }

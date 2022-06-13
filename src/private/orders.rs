@@ -53,7 +53,7 @@ pub async fn request_orders(
         ORDERS_API_PATH,
         order_ids.join(",")
     );
-    let headers = Headers::create_get_headers(&ORDERS_API_PATH)?;
+    let headers = Headers::create_get_headers(ORDERS_API_PATH)?;
     let response = http_client.get(url, &headers).await?;
     parse_from_http_response::<Orders>(&response)
 }

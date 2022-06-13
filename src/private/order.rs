@@ -51,15 +51,15 @@ fn build_parameters(
 ) -> Result<Value, Error> {
     Ok(match execution_type {
         ExecutionType::Market => {
-            build_market_parameters(&execution_type, &symbol, &side, size, &time_in_force)
+            build_market_parameters(execution_type, symbol, side, size, time_in_force)
         }
         _ => match price {
             Some(p) => build_limit_or_stop_paramters(
-                &execution_type,
-                &symbol,
-                &side,
+                execution_type,
+                symbol,
+                side,
                 size,
-                &time_in_force,
+                time_in_force,
                 p,
                 losscut_price,
             ),
@@ -127,15 +127,15 @@ pub async fn request_order(
 ) -> Result<RestResponse<Order>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, ORDER_API_PATH,);
     let parameters = build_parameters(
-        &execution_type,
-        &symbol,
-        &side,
+        execution_type,
+        symbol,
+        side,
         size,
-        &time_in_force,
+        time_in_force,
         price,
         losscut_price,
     )?;
-    let headers = Headers::create_post_headers(&ORDER_API_PATH, &parameters)?;
+    let headers = Headers::create_post_headers(ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<Order>(&response)
 }

@@ -118,7 +118,7 @@ mod tests {
             return_error: false,
         };
         let resp = request_status(&http_client).await;
-        assert_eq!(resp.is_err(), true);
+        assert!(resp.is_err());
     }
 
     #[tokio::test]
@@ -130,6 +130,6 @@ mod tests {
             return_error: true,
         };
         let resp = request_status(&http_client).await;
-        assert_eq!(resp.is_err(), true);
+        assert!(resp.is_err());
     }
 }

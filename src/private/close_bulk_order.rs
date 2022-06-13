@@ -50,17 +50,12 @@ fn build_parameters(
 ) -> Result<Value, Error> {
     Ok(match execution_type {
         ExecutionType::Market => {
-            build_market_parameters(&execution_type, &symbol, &side, size, &time_in_force)?
+            build_market_parameters(execution_type, symbol, side, size, time_in_force)?
         }
         _ => match price {
-            Some(p) => build_limit_or_stop_paramters(
-                &execution_type,
-                &symbol,
-                &side,
-                size,
-                p,
-                &time_in_force,
-            )?,
+            Some(p) => {
+                build_limit_or_stop_paramters(execution_type, symbol, side, size, p, time_in_force)?
+            }
             None => return Err(Error::PriceNotSpecifiedError()),
         },
     })
@@ -111,9 +106,8 @@ pub async fn request_close_bulk_order(
     time_in_force: &TimeInForce,
 ) -> Result<RestResponse<CloseBulkOrder>, Error> {
     let url = format!("{}{}", PRIVATE_ENDPOINT, CLOSE_ORDER_API_PATH,);
-    let parameters =
-        build_parameters(&execution_type, &symbol, &side, size, price, &time_in_force)?;
-    let headers = Headers::create_post_headers(&CLOSE_ORDER_API_PATH, &parameters)?;
+    let parameters = build_parameters(execution_type, symbol, side, size, price, time_in_force)?;
+    let headers = Headers::create_post_headers(CLOSE_ORDER_API_PATH, &parameters)?;
     let response = http_client.post(url, &headers, &parameters).await?;
     parse_from_http_response::<CloseBulkOrder>(&response)
 }
